@@ -4,7 +4,7 @@ close all;clear;clc;
 
 % Clean EEG image directory
 if (exist(sprintf('%s',getimagepath()),'dir'))
-    delete(sprintf('%s\\*.*',getimagepath()));
+    delete(sprintf('%s%s*.*',getimagepath(),filesep));
 end
 
 
@@ -12,7 +12,7 @@ end
 epochRange = 1:30;
 channelRange=1:14;
 labelRange = [ones(1,15) ones(1,15)+1];
-imagescale=2;
+imagescale=1;
 
 
 for epoch=epochRange     % subject

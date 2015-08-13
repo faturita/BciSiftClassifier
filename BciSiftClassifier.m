@@ -24,7 +24,8 @@ else
             predicted = [];
             
             testRange=[11:15 26:30];
-            testRange=[1:5   16:20]; 
+            testRange=[1:5   16:20];
+            testRange=epochRange;
 
             expected = labelRange(testRange);
             
