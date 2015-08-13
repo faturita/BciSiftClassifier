@@ -12,7 +12,7 @@ end
 epochRange = 1:30;
 channelRange=1:14;
 labelRange = [ones(1,15) ones(1,15)+1];
-imagescale=2;
+imagescale=1;
 
 
 for epoch=epochRange     % subject

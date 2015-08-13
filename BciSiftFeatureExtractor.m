@@ -17,12 +17,15 @@ clear DE;
 
 %DbScanRadio=155;minPts=2;channelRange=7:7;graphics=0; comps=0; expcode=32;
 
+%DbScanRadio=250;minPts=2;channelRange=7:7;graphics=0; comps=0; expcode=35;
+
 for channel=channelRange
     
     fprintf ('Channel %d -------------\n', channel);
     
     % M Matriz de Descriptores, IX indices (chan, label, subject, descId)
-    [M, IX] = BuildDescriptorMatrix(F,channel,labelRange,[6:15 21:30]);
+    %[M, IX] = BuildDescriptorMatrix(F,channel,labelRange,[6:15 21:30]);
+    [M, IX] = BuildDescriptorMatrix(F,channel,labelRange,epochRange);
     
     %M = M .* (1/max(max(M)));
     

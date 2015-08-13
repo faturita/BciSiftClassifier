@@ -1,6 +1,10 @@
 % DE.C(cluster).M Radios Label, tiene la informaci?n de la submatriz del
 % cluster.
 
+%load('newdesc.mat');
+%featuresize = size(DE.C,2);cluster=featuresize;graphics=0;comps=0;channelRange=7:7
+
+
 fprintf('Classifying features %d\n', featuresize);
 
 if (~((exist('DE'))))
@@ -18,13 +22,16 @@ else
         
         % Check if I have two different clusters!!!!!!!!!!
         
-        M = MM(channel).M;
-        IX = MM(channel).IX;
+        %M = MM(channel).M;
+        %IX = MM(channel).IX;
         
             predicted = [];
             
-            testRange=[11:15 26:30];
-            testRange=[1:5   16:20]; 
+            %testRange=[11:15 26:30];
+            %testRange=[1:5   16:20]; 
+            
+            testRange = [1:30]
+            labelRange= [ones(1,15) ones(1,15)+1];
 
             expected = labelRange(testRange);
             
