@@ -15,7 +15,7 @@ clear DE;
 
 %DbScanRadio=275;minPts=16;channelRange=14:14;graphics=0; comps=0; expcode=20;
 
-%DbScanRadio=155;minPts=2;channelRange=7:7;graphics=0; comps=0; expcode=32;
+%DbScanRadio=155;minPts=2;channelRange=7:7;graphics=0; comps=0; expcode=40;
 
 %DbScanRadio=250;minPts=2;channelRange=7:7;graphics=0; comps=0; expcode=35;
 
