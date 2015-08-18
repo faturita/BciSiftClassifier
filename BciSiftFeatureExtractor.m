@@ -15,14 +15,19 @@ clear DE;
 
 %DbScanRadio=275;minPts=16;channelRange=14:14;graphics=0; comps=0; expcode=20;
 
-%DbScanRadio=155;minPts=2;channelRange=7:7;graphics=0; comps=0; expcode=40;
+% Alpha Waves
+DbScanRadio=155;minPts=2;channelRange=7:7;graphics=0; comps=0; expcode=40;
+DbScanRadio=200;minPts=2;channelRange=7:7;graphics=0; comps=0; expcode=40;
+
+%DbScanRadio=204;minPts=2;channelRange=14:14;graphics=0; comps=0; expcode=38;
 
 for channel=channelRange
     
     fprintf ('Channel %d -------------\n', channel);
     
     % M Matriz de Descriptores, IX indices (chan, label, subject, descId)
-    [M, IX] = BuildDescriptorMatrix(F,channel,labelRange,epochRange);
+    %[M, IX] = BuildDescriptorMatrix(F,channel,labelRange,epochRange);
+    [M, IX] = BuildDescriptorMatrix(F,channel,labelRange,[1:10 16:25]);
     
     %M = M .* (1/max(max(M)));
     
@@ -209,6 +214,7 @@ for channel=channelRange
             DE.C(cluster).M(:,:) = M(:,find(ptsC==cluster));
             DE.C(cluster).Radios = Radios(find(ptsC==cluster));
             DE.C(cluster).Label = clusterlabel;
+            DE.C(cluster).IX(:,:) = IX(find(ptsC==cluster),:);
         end
     end
 end
