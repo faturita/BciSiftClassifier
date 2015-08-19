@@ -23,7 +23,7 @@ else
         
             predicted = [];
             
-            testRange=[11:15 26:30];
+            %testRange=[11:15 26:30];
             %testRange=[1:5   16:20];
             %testRange=epochRange;
 
@@ -81,8 +81,9 @@ else
                 
                 fprintf ('+Test %d Class 1: %3d Class 2: %3d \n', test, white,black);
                 
-                
-                if (white>black)
+                if (black>0)
+                    predicted=[predicted 2];
+                elseif (white>black)
                     predicted=[predicted 1];
                 elseif (white<black)
                     predicted=[predicted 2];
