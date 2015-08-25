@@ -8,12 +8,13 @@ minPts=2;
 graphics=0;
 
 % Limitarlo solo a un canal
-channelRange=11:14;channels=32;
+channelRange=1:14;channels=7;
 testRange=epochRange;
 comps=0;
+
 %for minPts=2:mean(mean(D))
-    for channels=1:32
-        channelRange=channels:channels;
+    for channels=1:14
+        channelRange=channels:channels
         for DbScanRadio=50:400
             fprintf('Channel %10.3f - MinPts %10.3f - Radio: %10.3f\n', channels,minPts, DbScanRadio);
             run('BciSiftFeatureExtractor.m');

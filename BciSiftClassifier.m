@@ -25,7 +25,7 @@ else
             
             %testRange=[11:15 26:30];
             %testRange=[1:5   16:20];
-            %testRange=epochRange;
+            testRange=epochRange;
 
             expected = labelRange(testRange);
             
@@ -44,6 +44,10 @@ else
                     if (size(DE.C(cluster).M,2)) > 0
                         [IDX,D] = knnsearch(DE.C(cluster).M',DESCRIPTORS');
                         
+                        
+                        % IDX contains clusters Ids.
+                        % D contains distance to each descriptor to its
+                        % cluster center.
                         RADIOS = DE.C(cluster).Radios;
                         
                         IDX2 = [];

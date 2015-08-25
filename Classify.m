@@ -11,7 +11,7 @@ for channel=channelRange
             
             %testRange=[11:15 26:30];
             %testRange=[1:5   16:20];
-            %testRange=epochRange;
+            testRange=epochRange;
 
             expected = labelRange(testRange);
             
@@ -30,15 +30,15 @@ for channel=channelRange
                     %if (size(DE.C(cluster).M,2)) > 0
                         [IDX,D] = knnsearch(sM',DESCRIPTORS');
                         
-                        RADIOS = zeros(1,size(sM,2));
+                        RADIOS = zeros(1,size(sM,2))+200;
                         
                         IDX2 = [];
                         for d=1:size(D,1)
-                            if (D(d)<=RADIOS(IDX(d)))
+                            %if (D(d)<=RADIOS(IDX(d)))
                                 IDX2 = [IDX2 IDX(d)];
-                                Labels(d) = 2;
+                                Labels(d) = 1;
                                 %SC(test).Cluster = [SC(test).Cluster [cluster]];
-                            end
+                            %end
                         end
                     %end
                 %end

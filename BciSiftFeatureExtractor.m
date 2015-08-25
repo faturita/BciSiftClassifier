@@ -27,8 +27,8 @@ for channel=channelRange
     fprintf ('Channel %d -------------\n', channel);
     
     % M Matriz de Descriptores, IX indices (chan, label, subject, descId)
-    [M, IX] = BuildDescriptorMatrix(F,channel,labelRange,epochRange);
-    %[M, IX] = BuildDescriptorMatrix(F,channel,labelRange,[1:10 16:25]);
+    %[M, IX] = BuildDescriptorMatrix(F,channel,labelRange,epochRange);
+    [M, IX] = BuildDescriptorMatrix(F,channel,labelRange,[1:10 16:25]);
     %[M, IX] = BuildDescriptorMatrix(F,channel,labelRange,[6:15 21:30]);
     %M = M .* (1/max(max(M)));
     

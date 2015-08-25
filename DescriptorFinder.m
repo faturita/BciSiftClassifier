@@ -33,20 +33,20 @@ end
 sM = [];
 for k=1:size(C,1)
     % Pick the most successfull descriptors.
-    if (C(k,2)==2 && sizes(k)>=0)
+    if (C(k,2)==1 && sizes(k)>=0)
         % channel, label, epoch
         %[C(k,1) C(k,2) C(k,3) C(k,4)]
-        DisplayDescriptorImage(F(C(k,1),C(k,2),C(k,3)).frames, F(C(k,1),C(k,2),C(k,3)).descriptors, C(k,3),C(k,2),C(k,1),C(k,4)); 
+        %DisplayDescriptorImage(F(C(k,1),C(k,2),C(k,3)).frames, F(C(k,1),C(k,2),C(k,3)).descriptors, C(k,3),C(k,2),C(k,1),C(k,4)); 
         sM = [sM F(C(k,1),C(k,2),C(k,3)).descriptors(:,C(k,4))];
     end
 end
 
 
 % 
-% figure
-%     plot(sizes);
-%     title('Repeticiones por descriptor');
-%     xlabel('N?mero de Indice de Descriptor Unico')
-%     ylabel('Cantidad de Repeticiones')
-%     axis([0 600 0 9]);
+figure
+    plot(sizes);
+    title('Repeticiones por descriptor');
+    xlabel('N?mero de Indice de Descriptor Unico')
+    ylabel('Cantidad de Repeticiones')
+    axis([0 600 0 9]);
 %     
