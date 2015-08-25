@@ -30,7 +30,7 @@ else
             %testRange=[11:15 26:30];
             %testRange=[1:5   16:20]; 
             
-            testRange = [1:30]
+            testRange = [1:30];
             labelRange= [ones(1,15) ones(1,15)+1];
 
             expected = labelRange(testRange);
