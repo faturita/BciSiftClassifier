@@ -20,16 +20,16 @@ clear DE;
 %DbScanRadio=200;minPts=2;channelRange=7:7;graphics=0; comps=0; expcode=40;
 
 %DbScanRadio=204;minPts=2;channelRange=14:14;graphics=0; comps=0; expcode=41;
-DbScanRadio=210;minPts=2;channelRange=7:7;graphics=0; comps=0; expcode=35;
+%DbScanRadio=210;minPts=2;channelRange=7:7;graphics=0; comps=0; expcode=35;
 
 fprintf('Building Descriptor Matrix M\n');
-for channel=channelRange
+%for channel=channelRange
     
     fprintf ('Channel %d -------------\n', channel);
     
     % M Matriz de Descriptores, IX indices (chan, label, subject, descId)
-    [M, IX] = BuildDescriptorMatrix(F,channel,labelRange,epochRange);
-    %[M, IX] = BuildDescriptorMatrix(F,channel,labelRange,[1:10 16:25]);
+    %[M, IX] = BuildDescriptorMatrix(F,channel,labelRange,epochRange);
+    [M, IX] = BuildDescriptorMatrix(F,channel,labelRange,trainingRange);
     %[M, IX] = BuildDescriptorMatrix(F,channel,labelRange,[6:15 21:30]);
     %M = M .* (1/max(max(M)));
     
@@ -47,7 +47,7 @@ for channel=channelRange
     MM(channel).IX = IX;
     
     %MM(channel).D = squareform(pdist(M'));
-end
+%end
 
 %graphics = 1;
 

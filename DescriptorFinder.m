@@ -31,13 +31,16 @@ end
 % unique returns the rows in order of repetitions...
 
 sM = [];
+sMLabel = [];
+
 for k=1:size(C,1)
     % Pick the most successfull descriptors.
-    if (C(k,2)==1 && sizes(k)>=0)
+    if (sizes(k)>=5)
         % channel, label, epoch
         %[C(k,1) C(k,2) C(k,3) C(k,4)]
         %DisplayDescriptorImage(F(C(k,1),C(k,2),C(k,3)).frames, F(C(k,1),C(k,2),C(k,3)).descriptors, C(k,3),C(k,2),C(k,1),C(k,4)); 
         sM = [sM F(C(k,1),C(k,2),C(k,3)).descriptors(:,C(k,4))];
+        sMLabel = [sMLabel C(k,2)];
     end
 end
 

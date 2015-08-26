@@ -1,3 +1,10 @@
+% Parameters ===================
+comps=0;graphics=0;
+
+% ==============================
+
+
+
 % Classify Something based on sM subMatrix, F, testRange, labelRange
 for channel=channelRange
         fprintf ('Channel %d -------------\n', channel);
@@ -36,7 +43,7 @@ for channel=channelRange
                         for d=1:size(D,1)
                             %if (D(d)<=RADIOS(IDX(d)))
                                 IDX2 = [IDX2 IDX(d)];
-                                Labels(d) = 1;
+                                Labels(d) = sMLabel(IDX(d));
                                 %SC(test).Cluster = [SC(test).Cluster [cluster]];
                             %end
                         end

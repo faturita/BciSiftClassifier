@@ -5,6 +5,12 @@
 %featuresize = size(DE.C,2);cluster=featuresize;graphics=0;comps=0;channelRange=7:7
 
 
+% Parameters =====================
+%testRange = [11:15 26:30];
+%testRange=epochRange;
+% ================================
+
+
 fprintf('Classifying features %d\n', featuresize);
 
 if (~((exist('DE'))))
@@ -17,7 +23,7 @@ elseif ((cluster<=1))
     fprintf('Just one cluster, no classification \n');
     ACC=0.5;
 else
-    for channel=channelRange
+    %for channel=channelRange
         fprintf ('Channel %d -------------\n', channel);
         
         % Check if I have two different clusters!!!!!!!!!!
@@ -26,10 +32,6 @@ else
         %IX = MM(channel).IX;
         
             predicted = [];
-            
-            %testRange = [1:30];
-            %labelRange= [ones(1,15) ones(1,15)+1];
-            testRange=epochRange;
 
             expected = labelRange(testRange);
             
@@ -118,7 +120,7 @@ else
                 ACC = (   C(2,2)+C(3,3)  )  / size(predicted,2)  ;
             end
     end
-end
+%end
 
 if (graphics)
     title(sprintf('Exp.%d:Clusters Dbscan BCI-SIFT PCA %d Comp', expcode,comps));
