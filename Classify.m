@@ -1,23 +1,5 @@
-% DE.C(cluster).M Radios Label, tiene la informaci?n de la submatriz del
-% cluster.
-
-%load('newdesc.mat');
-%featuresize = size(DE.C,2);cluster=featuresize;graphics=0;comps=0;channelRange=7:7
-
-
-fprintf('Classifying features %d\n', featuresize);
-
-if (~((exist('DE'))))
-    fprintf('No homogeneuos cluster, no classification \n');
-    ACC=0.5;
-elseif ((featuresize==0))
-    fprintf('Just one cluster, no classification \n');
-    ACC=0.5;
-elseif ((cluster<=1))
-    fprintf('Just one cluster, no classification \n');
-    ACC=0.5;
-else
-    for channel=channelRange
+% Classify Something based on sM subMatrix, F, testRange, labelRange
+for channel=channelRange
         fprintf ('Channel %d -------------\n', channel);
         
         % Check if I have two different clusters!!!!!!!!!!
@@ -27,8 +9,8 @@ else
         
             predicted = [];
             
-            %testRange = [1:30];
-            %labelRange= [ones(1,15) ones(1,15)+1];
+            %testRange=[11:15 26:30];
+            %testRange=[1:5   16:20];
             testRange=epochRange;
 
             expected = labelRange(testRange);
@@ -43,27 +25,23 @@ else
                 
                 
                 Labels = zeros(1,size(DESCRIPTORS,2));
-                SC(test).Cluster = [];
-                for cluster=1:size(DE.C,2)
-                    if (size(DE.C(cluster).M,2)) > 0
-                        [IDX,D] = knnsearch(DE.C(cluster).M',DESCRIPTORS');
+                %SC(test).Cluster = [];
+                %for cluster=1:size(DE.C,2)
+                    %if (size(DE.C(cluster).M,2)) > 0
+                        [IDX,D] = knnsearch(sM',DESCRIPTORS');
                         
-                        
-                        % IDX contains clusters Ids.
-                        % D contains distance to each descriptor to its
-                        % cluster center.
-                        RADIOS = DE.C(cluster).Radios;
+                        RADIOS = zeros(1,size(sM,2))+200;
                         
                         IDX2 = [];
                         for d=1:size(D,1)
-                            if (D(d)<=RADIOS(IDX(d)))
+                            %if (D(d)<=RADIOS(IDX(d)))
                                 IDX2 = [IDX2 IDX(d)];
-                                Labels(d) = DE.C(cluster).Label;
-                                SC(test).Cluster = [SC(test).Cluster [cluster]];
-                            end
+                                Labels(d) = 1;
+                                %SC(test).Cluster = [SC(test).Cluster [cluster]];
+                            %end
                         end
-                    end
-                end
+                    %end
+                %end
                 
                
                 if (graphics)
@@ -85,9 +63,10 @@ else
                 white = size(find(Hits == 1),2);
                 black = size(find(Hits == 2),2);
                 
-                SC(test).Hits = Hits;
+                %SC(test).Hits = Hits;
                 
                 fprintf ('+Test %d Class 1: %3d Class 2: %3d \n', test, white,black);
+                
                 
                 if (white>black)
                     predicted=[predicted 1];
@@ -118,11 +97,3 @@ else
                 ACC = (   C(2,2)+C(3,3)  )  / size(predicted,2)  ;
             end
     end
-end
-
-if (graphics)
-    title(sprintf('Exp.%d:Clusters Dbscan BCI-SIFT PCA %d Comp', expcode,comps));
-    xlabel('X')
-    ylabel('Y')
-end
-

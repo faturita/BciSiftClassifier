@@ -10,18 +10,17 @@ graphics=0;
 % Limitarlo solo a un canal
 channelRange=7:7;channels=7;
 
-comps=0;
 %for minPts=2:mean(mean(D))
-    %for channels=11:14
-        channelRange=channels:channels;
-        for DbScanRadio=50:400
+    for channels=1:14
+        channelRange=channels:channels
+        for DbScanRadio=150:300
             fprintf('Channel %10.3f - MinPts %10.3f - Radio: %10.3f\n', channels,minPts, DbScanRadio);
             run('BciSiftFeatureExtractor.m');
             run('BciSiftClassifier.m');
             Performance(channels,DbScanRadio)=ACC;
         end
     
-    %end
+    end
 
 %for channels=1:14
     figure

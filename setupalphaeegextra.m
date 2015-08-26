@@ -7,12 +7,13 @@ if (exist(sprintf('%s',getimagepath()),'dir'))
     delete(sprintf('%s%s*.*',getimagepath(),filesep));
 end
 
-% Parameters ==============
-epochRange = 1:30;
+
+epochRange = 1:200;
 channelRange=1:14;
-labelRange = [ones(1,15) ones(1,15)+1];
-imagescale=1;siftscale=1;siftdescriptordensity=6;
-% =========================
+labelRange = [ones(1,100) ones(1,100)+1];
+imagescale=1;
+siftscale=1;
+siftdescriptordensity=12;
 
 for epoch=epochRange     % subject
 
@@ -24,19 +25,17 @@ for epoch=epochRange     % subject
         filename='EyesOpen';
     end
     
-    if (epoch>=16)
-        subject = epoch-15;
+    if (epoch>101)
+        subject=epoch-100;
     else
-        subject = epoch;
+        subject=epoch;
     end
     
-    directory = sprintf('Rodrigo%s',filesep);
-    file = sprintf('eeg_%s_%i.dat',filename,subject);
     
-    fprintf('%s%s%s\n', directory, filesep, file );
-    
-    output = loadepoceegraw(directory,file,1); 
+    %output = loadepoceegraw(sprintf('Rodrigo//session%d',mod(session,label)+1),sprintf('eeg_%s_%i.dat',filename,mod(subject,10)),1); 
+    output=loadepoceegraw('Rodrigo/Alfa',sprintf('e.%d.l.%d.dat',subject,label),1);
 
+        
     for channel=channelRange
         image=eegimagescaled(epoch,label,output,channel,imagescale);
     end

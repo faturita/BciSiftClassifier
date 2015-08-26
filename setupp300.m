@@ -17,7 +17,7 @@ p300 = load('p300eeg');
 
 plot(p300.runs{1}.x(1,:,4))
 
-epochRange = 1:138;
+epochRange = 1:135;
 channelRange=1:32;
 labelRange = p300.runs{1}.y;
 labelRange(labelRange == 1 ) = 2;   % Hit
@@ -25,7 +25,8 @@ labelRange(labelRange == -1) = 1;   % Nohit
 
     
 imagescale=1;
-
+siftscale=1;
+siftdescriptordensity=12;
 
 for epoch=epochRange     % subject
 
@@ -41,8 +42,7 @@ end
 
 
 % Generate and Save all the descriptors...
-SaveDescriptors(labelRange,epochRange,channelRange,10,1);
+SaveDescriptors(labelRange,epochRange,channelRange,10,siftscale, siftdescriptordensity,1);
 F = LoadDescriptors(labelRange,epochRange,channelRange);
-
 
 
