@@ -11,7 +11,7 @@ end
 epochRange = 1:30;
 channelRange=1:14;
 labelRange = [ones(1,15) ones(1,15)+1];
-imagescale=1;siftscale=1;siftdescriptordensity=6;
+imagescale=1;siftscale=1;siftdescriptordensity=64;
 % =========================
 
 for epoch=epochRange     % subject

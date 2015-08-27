@@ -8,11 +8,12 @@ if (exist(sprintf('%s',getimagepath()),'dir'))
 end
 
 
-
+% Parameters ==============
 epochRange = 1:30;
 channelRange=1:14;
 labelRange = [ones(1,15) ones(1,15)+1];
-imagescale=1;
+imagescale=1;siftscale=1;siftdescriptordensity=64;
+% =========================
 
 
 for epoch=epochRange     % subject
@@ -35,5 +36,5 @@ end
 
 
 % Generate and Save all the descriptors...
-SaveDescriptors(labelRange,epochRange,channelRange,10,1);
+SaveDescriptors(labelRange,epochRange,channelRange,10,siftscale, siftdescriptordensity,1);
 F = LoadDescriptors(labelRange,epochRange,channelRange);

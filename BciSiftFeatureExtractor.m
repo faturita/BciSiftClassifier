@@ -1,16 +1,19 @@
+% expcode,DbScanRadio,minPts,channel,trainingRange,comps,graphics
+function DE = BciSiftFeatureExtractor(F,expcode,DbScanRadio,minPts,channel,trainingRange,labelRange,comps,graphics)
+
 clear MM;
 clear M;
 clear DE;
 
 
 % Parameters ==========================
-DbScanRadio=210;
-minPts=2;
-channel=7;
-graphics=0; comps=0; 
-expcode=45;
-trainingRange=epochRange;
-testRange=epochRange;
+% DbScanRadio=210;
+% minPts=2;
+% channel=7;
+% graphics=0; comps=0; 
+% expcode=45;
+% trainingRange=epochRange;
+% testRange=epochRange;
 % =====================================
 
 %DbScanRadio=355;minPts=2;channelRange=7:7;graphics=0;   Ejemplo
@@ -229,5 +232,10 @@ featuresize = 4;
     end
 %end
 
+if (~((exist('DE'))))
+    fprintf('No homogeneuos cluster, no classification \n');
+    DE=[];
+end
 % Este Script Produce DE.C que tiene clusters homogeneos que se pueden usar
 % para clasificar. FUNCIONAN PARA UN SOLO CANAL POR VEZ.
+end
