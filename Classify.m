@@ -1,10 +1,16 @@
+clear Performance;
+
 % Parameters ===================
 comps=0;graphics=0;
-
+channelRange=7:7
+%DbScanRadio=210;
+testRange=epochRange;
 % ==============================
+sM = dlmread('sM.dat');
+sMLabel = dlmread('SMLabel.dat');
 
 
-
+for DbScanRadio=50:400
 % Classify Something based on sM subMatrix, F, testRange, labelRange
 for channel=channelRange
         fprintf ('Channel %d -------------\n', channel);
@@ -16,10 +22,6 @@ for channel=channelRange
         
             predicted = [];
             
-            %testRange=[11:15 26:30];
-            %testRange=[1:5   16:20];
-            testRange=epochRange;
-
             expected = labelRange(testRange);
             
             for test=testRange
@@ -37,15 +39,15 @@ for channel=channelRange
                     %if (size(DE.C(cluster).M,2)) > 0
                         [IDX,D] = knnsearch(sM',DESCRIPTORS');
                         
-                        RADIOS = zeros(1,size(sM,2))+200;
+                        RADIOS = zeros(1,size(sM,2))+DbScanRadio;
                         
                         IDX2 = [];
                         for d=1:size(D,1)
-                            %if (D(d)<=RADIOS(IDX(d)))
+                            if (D(d)<=RADIOS(IDX(d)))
                                 IDX2 = [IDX2 IDX(d)];
                                 Labels(d) = sMLabel(IDX(d));
                                 %SC(test).Cluster = [SC(test).Cluster [cluster]];
-                            %end
+                            end
                         end
                     %end
                 %end
@@ -103,4 +105,6 @@ for channel=channelRange
             else
                 ACC = (   C(2,2)+C(3,3)  )  / size(predicted,2)  ;
             end
-    end
+end
+Performance(channel,DbScanRadio)=ACC;
+end

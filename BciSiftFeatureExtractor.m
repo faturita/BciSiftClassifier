@@ -3,6 +3,16 @@ clear M;
 clear DE;
 
 
+% Parameters ==========================
+DbScanRadio=210;
+minPts=2;
+channel=7;
+graphics=0; comps=0; 
+expcode=45;
+trainingRange=epochRange;
+testRange=epochRange;
+% =====================================
+
 %DbScanRadio=355;minPts=2;channelRange=7:7;graphics=0;   Ejemplo
 %interesante
 %DbScanRadio=194;minPts=10;channelRange=7:7;graphics=0;comps=20;   
@@ -50,7 +60,6 @@ fprintf('Building Descriptor Matrix M\n');
 %end
 
 %graphics = 1;
-
 if (graphics)
     hold on;
 end
@@ -60,7 +69,7 @@ homocluster=0;
 % En el caso de DBSCAN los features los devuelve el propio algoritmo.
 featuresize = 4;
 %while (featuresize<=6)
-for channel=channelRange
+%for channel=channelRange
     
     fprintf ('Channel %d -------------\n', channel);
     
@@ -98,7 +107,6 @@ for channel=channelRange
             error('Cluster has less than minPts points, which is valid according to DBscan but I do not want.');
         end
     end
-    
     
     
     %DD = MM(channel).D;
@@ -219,7 +227,7 @@ for channel=channelRange
             DE.C(cluster).IX(:,:) = IX(find(ptsC==cluster),:);
         end
     end
-end
+%end
 
 % Este Script Produce DE.C que tiene clusters homogeneos que se pueden usar
 % para clasificar. FUNCIONAN PARA UN SOLO CANAL POR VEZ.

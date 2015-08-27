@@ -87,9 +87,11 @@ else
                 white = size(find(Hits == 1),2);
                 black = size(find(Hits == 2),2);
                 
+                empty = size(find(Hits == 0),2);
+                
                 SC(test).Hits = Hits;
                 
-                fprintf ('+Test %d Class 1: %3d Class 2: %3d \n', test, white,black);
+                fprintf ('+Test %2d(%3d) Class 1: %3d Class 2: %3d Empty %3d\n', test, size(DESCRIPTORS,2), white,black, empty);
                 
                 if (white>black)
                     predicted=[predicted 1];
