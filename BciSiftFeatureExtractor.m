@@ -69,6 +69,8 @@ end
 
 homocluster=0;
 
+CLSTER = [];
+
 % En el caso de DBSCAN los features los devuelve el propio algoritmo.
 featuresize = 4;
 %while (featuresize<=6)
@@ -228,13 +230,17 @@ featuresize = 4;
             DE.C(cluster).Radios = Radios(find(ptsC==cluster));
             DE.C(cluster).Label = clusterlabel;
             DE.C(cluster).IX(:,:) = IX(find(ptsC==cluster),:);
+            
+            CLSTER = [CLSTER clusterlabel];
         end
     end
 %end
 
 if (~((exist('DE'))))
     fprintf('No homogeneuos cluster, no classification \n');
-    DE=[];
+    DE.CLSTER = [];
+else
+    DE.CLSTER = CLSTER;
 end
 % Este Script Produce DE.C que tiene clusters homogeneos que se pueden usar
 % para clasificar. FUNCIONAN PARA UN SOLO CANAL POR VEZ.

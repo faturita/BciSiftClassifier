@@ -1,5 +1,5 @@
 % F,DE,featuresize,cluster,channel,testRange 
-function ACC = BciSiftClassifier(F,DE,featuresize,cluster,channel,testRange,labelRange)
+function ACC = BciSiftClassifier(F,DE,channel,testRange,labelRange,comps,graphics)
 % DE.C(cluster).M Radios Label, tiene la informaci?n de la submatriz del
 % cluster.
 
@@ -13,17 +13,14 @@ function ACC = BciSiftClassifier(F,DE,featuresize,cluster,channel,testRange,labe
 % ================================
 
 
-fprintf('Classifying features %d\n', featuresize);
+fprintf('Classifying features %d\n', size(DE.CLSTER,2));
 
-if (~((exist('DE'))))
-    fprintf('No homogeneuos cluster, no classification \n');
-    ACC=0.5;
-elseif ((featuresize==0))
+if (size(DE.CLSTER,2)<2)
+    fprintf('Less than two classifying clusters. \n');
+    ACC=0;
+elseif (size(DE.C,2)<2)
     fprintf('Just one cluster, no classification \n');
-    ACC=0.5;
-elseif ((cluster<=1))
-    fprintf('Just one cluster, no classification \n');
-    ACC=0.5;
+    ACC=0;
 else
     %for channel=channelRange
     fprintf ('Channel %d -------------\n', channel);
@@ -93,7 +90,7 @@ else
         
         SC(test).Hits = Hits;
         
-        fprintf ('+Test %2d(%3d) Class 1: %3d Class 2: %3d Empty %3d\n', test, size(DESCRIPTORS,2), white,black, empty);
+        fprintf ('+Test %2d(%3d) Class 1: %3d Class 2: %3d Out(%3d)\n', test, size(DESCRIPTORS,2), white,black, empty);
         
         if (white>black)
             predicted=[predicted 1];
