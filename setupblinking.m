@@ -27,7 +27,7 @@ for epoch=epochRange     % subject
     
     
     %output = loadepoceegraw(sprintf('Rodrigo//session%d',mod(session,label)+1),sprintf('eeg_%s_%i.dat',filename,mod(subject,10)),1); 
-    output=loadepoceegraw('Rodrigo/Contar',sprintf('e.%d.l.%d.dat',subject,1),1);
+    output=loadepoceegraw('Rodrigo/Contar',sprintf('e.%d.l.%d.dat',subject,label),1);
 
         
     for channel=channelRange

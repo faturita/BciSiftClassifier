@@ -1,4 +1,4 @@
-function Performance = Classify(F, graphics, channelRange, testRange, labelRange)
+function Performance = Classify(F, graphics, DbScanRadioRange, channelRange, testRange, labelRange)
 
 clear Performance;
 
@@ -13,11 +13,11 @@ sM = dlmread('sM.dat');
 sMLabel = dlmread('SMLabel.dat');
 
 
-for DbScanRadio=50:400
+for DbScanRadio=DbScanRadioRange
     % Classify Something based on sM subMatrix, F, testRange, labelRange
     for channel=channelRange
-        fprintf ('Channel %d -------------\n', channel);
-        
+        fprintf('Channel %10.3f - MinPts %10.3f - Radio: %10.3f\n', channel,2, DbScanRadio);
+  
         predicted = [];
         
         expected = labelRange(testRange);

@@ -1,5 +1,5 @@
 % F,DE,featuresize,cluster,channel,testRange 
-function ACC = BciSiftClassifier(F,DE,channel,testRange,labelRange,comps,graphics)
+function [ACC, SC] = BciSiftClassifier(F,DE,channel,testRange,labelRange,comps,graphics)
 % DE.C(cluster).M Radios Label, tiene la informaci?n de la submatriz del
 % cluster.
 
@@ -12,6 +12,7 @@ function ACC = BciSiftClassifier(F,DE,channel,testRange,labelRange,comps,graphic
 %testRange=epochRange;
 % ================================
 
+SC = {};
 
 fprintf('Classifying features %d\n', size(DE.CLSTER,2));
 

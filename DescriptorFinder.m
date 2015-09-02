@@ -1,11 +1,15 @@
 % Analizando descriptores buenos para clasificar
 DESCS = [];
 
+% Parameters ==================================================
+% SC, testRange
 % SC(i).Cluster contains the clusters that were matched against
 % descriptors.
 % For each test image, I have a set of Cluster Ids (in SC(i).Cluster)
 % For each cluster (iterating a) I add the set of descriptors that
 % form each cluster into DESCS.
+% =============================================================
+
 for i=testRange
     Clusters = SC(i).Cluster;
     
@@ -35,7 +39,7 @@ sMLabel = [];
 
 for k=1:size(C,1)
     % Pick the most successfull descriptors.
-    if (sizes(k)>=0)
+    if (sizes(k)>=0 && C(k,2) == 2)
         % channel, label, epoch
         %[C(k,1) C(k,2) C(k,3) C(k,4)]
         %DisplayDescriptorImage(F(C(k,1),C(k,2),C(k,3)).frames, F(C(k,1),C(k,2),C(k,3)).descriptors, C(k,3),C(k,2),C(k,1),C(k,4)); 

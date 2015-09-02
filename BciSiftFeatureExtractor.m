@@ -5,7 +5,6 @@ clear MM;
 clear M;
 clear DE;
 
-
 % Parameters ==========================
 % DbScanRadio=210;
 % minPts=2;
@@ -16,35 +15,11 @@ clear DE;
 % testRange=epochRange;
 % =====================================
 
-%DbScanRadio=355;minPts=2;channelRange=7:7;graphics=0;   Ejemplo
-%interesante
-%DbScanRadio=194;minPts=10;channelRange=7:7;graphics=0;comps=20;   
-%DbScanRadio=188;minPts=2;channelRange=7:7;graphics=0;   
-% SOLO FUNCIONA PARA UN CANAL.
-%DbScanRadio=160;minPts=23;channelRange=7:7;graphics=0; comps=10;
-
-%DbScanRadio=15;minPts=2;channelRange=1:1;graphics=1; comps=2; expcode=5;
-%DbScanRadio=160;minPts=2;channelRange=14:14;graphics=0; comps=0; expcode=5;
-
-%DbScanRadio=275;minPts=16;channelRange=14:14;graphics=0; comps=0; expcode=20;
-
-% Alpha Waves
-%DbScanRadio=155;minPts=2;channelRange=7:7;graphics=0; comps=0; expcode=40;
-%DbScanRadio=200;minPts=2;channelRange=7:7;graphics=0; comps=0; expcode=40;
-
-%DbScanRadio=204;minPts=2;channelRange=14:14;graphics=0; comps=0; expcode=41;
-%DbScanRadio=210;minPts=2;channelRange=7:7;graphics=0; comps=0; expcode=35;
-
-fprintf('Building Descriptor Matrix M\n');
+fprintf('Building Descriptor Matrix M for Channel %d\n', channel);
 %for channel=channelRange
     
-    fprintf ('Channel %d -------------\n', channel);
-    
     % M Matriz de Descriptores, IX indices (chan, label, subject, descId)
-    %[M, IX] = BuildDescriptorMatrix(F,channel,labelRange,epochRange);
     [M, IX] = BuildDescriptorMatrix(F,channel,labelRange,trainingRange);
-    %[M, IX] = BuildDescriptorMatrix(F,channel,labelRange,[6:15 21:30]);
-    %M = M .* (1/max(max(M)));
     
     if (comps>0)
         % Centered=false es para que no le reste la media de cada variable
@@ -62,17 +37,16 @@ fprintf('Building Descriptor Matrix M\n');
     %MM(channel).D = squareform(pdist(M'));
 %end
 
-%graphics = 1;
 if (graphics)
     hold on;
 end
 
 homocluster=0;
-
 CLSTER = [];
 
 % En el caso de DBSCAN los features los devuelve el propio algoritmo.
 featuresize = 4;
+
 %while (featuresize<=6)
 %for channel=channelRange
     
@@ -103,6 +77,10 @@ featuresize = 4;
     Radio=[];
     Cidx=[];
     featuresize = size(CENTROIDS,2);
+    
+    % Indx: clustersx1: index on M where each center is located.
+    % ptsC: Nx1: for each element on M, to which cluster it was assigned.
+    % CENTROIDS: submatrices
     
     for index=1:featuresize
         
@@ -216,7 +194,7 @@ featuresize = 4;
         
         % Garantizo en este punto que no estoy perdiendo ningun elemento de
         % ningun cluster.
-        fprintf ('+Cluster %3d Class 1: %3d Class 2: %3d Index %10.8f,%10.8f \n', cluster,white,black, p1, p2 );
+        fprintf ('+Cluster %3d Class 1: %3d Class 2: %3d Index %10.8f,%10.8f \t', cluster,white,black, p1, p2 );
         
         if ((white+black) <= 1)
             fprintf ('Single cluster, discarted\n');
@@ -224,14 +202,17 @@ featuresize = 4;
         end
         
         if (  p1 <= 0.25 || p1 >= 0.75 )
-            fprintf('Homogeneous cluster...\n');
+            fprintf('Homogeneous %d \n', clusterlabel);
             homocluster=homocluster+1;
-            DE.C(cluster).M(:,:) = M(:,find(ptsC==cluster));
-            DE.C(cluster).Radios = Radios(find(ptsC==cluster));
-            DE.C(cluster).Label = clusterlabel;
-            DE.C(cluster).IX(:,:) = IX(find(ptsC==cluster),:);
+            
+            NEWCLUSTER = HomogenizeCluster(M,Radios,IX,ptsC,cluster,clusterlabel);
+            
+            % Submatrix M
+            DE.C(homocluster)= NEWCLUSTER;
             
             CLSTER = [CLSTER clusterlabel];
+        else
+            fprintf('Discarted!\n');
         end
     end
 %end
