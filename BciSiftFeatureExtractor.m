@@ -201,7 +201,7 @@ featuresize = 4;
             continue;
         end
         
-        if (  p1 <= 0.25 || p1 >= 0.75 )
+        if (  p1 <= 0.05 || p1 >= 0.95 )
             fprintf('Homogeneous %d \n', clusterlabel);
             homocluster=homocluster+1;
             

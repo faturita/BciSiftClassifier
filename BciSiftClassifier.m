@@ -62,6 +62,12 @@ else
                         IDX2 = [IDX2 IDX(d)];
                         Labels(d) = DE.C(cluster).Label;
                         SC(test).Cluster = [SC(test).Cluster [cluster]];
+                        
+                        
+                        if (test == 1122)
+                            fprintf('Desc %d belongs to cluster %d distance %10.4f\n',d,cluster,D(d));
+                        end
+                        
                     end
                 end
             end

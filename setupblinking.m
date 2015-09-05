@@ -8,9 +8,9 @@ if (exist(sprintf('%s',getimagepath()),'dir'))
 end
 
 
-epochRange = 1:20;
+epochRange = 1:30;
 channelRange=1:14;
-labelRange = [ones(1,10) ones(1,10)+1];
+labelRange = [ones(1,15) ones(1,15)+1];
 imagescale=1;
 siftscale=1;
 siftdescriptordensity=12;
@@ -27,7 +27,7 @@ for epoch=epochRange     % subject
     
     
     %output = loadepoceegraw(sprintf('Rodrigo//session%d',mod(session,label)+1),sprintf('eeg_%s_%i.dat',filename,mod(subject,10)),1); 
-    output=loadepoceegraw('Rodrigo/Contar',sprintf('e.%d.l.%d.dat',subject,label),1);
+    output=loadepoceegraw('NNMontani',sprintf('e.%d.l.%d.dat',subject,label),1);
 
         
     for channel=channelRange

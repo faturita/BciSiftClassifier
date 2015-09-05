@@ -15,8 +15,6 @@ for i=testRange
     
     % IX tiene channel, label, epoch, descriptorid  
     for a=1:size(Clusters,2)
-        OX = DE.C(a).IX(:,:);
-        zeros(size(OX,1),1)+Clusters(a);
         DESCS = [DESCS ;DE.C(Clusters(a)).IX(:,:)];
     end
 end
@@ -27,8 +25,13 @@ C=unique(DESCS,'rows');
 sizes=zeros(size(C,1),1);
 for j=1:size(C,1)
 
+    % Find the descriptor id that matches this one.
     L=DESCS(find(DESCS(:,4)==C(j,4)),:);
+    
+    % And find the descriptor from the same epoch/image.
     L=L(find(L(:,3)==C(j,3)),:);
+    
+    % Count how many I have.
     sizes(j) = size(L,1);
 end
 
@@ -39,10 +42,19 @@ sMLabel = [];
 
 for k=1:size(C,1)
     % Pick the most successfull descriptors.
-    if (sizes(k)>=0 && C(k,2) == 2)
+    if (sizes(k)>=1)
         % channel, label, epoch
         %[C(k,1) C(k,2) C(k,3) C(k,4)]
-        %DisplayDescriptorImage(F(C(k,1),C(k,2),C(k,3)).frames, F(C(k,1),C(k,2),C(k,3)).descriptors, C(k,3),C(k,2),C(k,1),C(k,4)); 
+        DisplayDescriptorImage(F(C(k,1),C(k,2),C(k,3)).frames, F(C(k,1),C(k,2),C(k,3)).descriptors, C(k,3),C(k,2),C(k,1),C(k,4)); 
+        
+        fprintf('Distinguished Descriptor: %2d.%2d.%2d:%3d ', C(k,1),C(k,2),C(k,3),C(k,4));
+        
+        for i=1:sizes(k)
+            fprintf('.');
+        end
+        
+        fprintf('\n');
+        
         sM = [sM F(C(k,1),C(k,2),C(k,3)).descriptors(:,C(k,4))];
         sMLabel = [sMLabel C(k,2)];
     end

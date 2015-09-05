@@ -1,4 +1,5 @@
-function Performance = Classify(F, graphics, DbScanRadioRange, channelRange, testRange, labelRange)
+% Classify Function!
+function Performance = Classify(F, expcode,graphics, DbScanRadioRange, channelRange, testRange, labelRange)
 
 clear Performance;
 
@@ -12,6 +13,8 @@ clear Performance;
 sM = dlmread('sM.dat');
 sMLabel = dlmread('SMLabel.dat');
 
+labelRange2 = shuffle(labelRange)
+
 
 for DbScanRadio=DbScanRadioRange
     % Classify Something based on sM subMatrix, F, testRange, labelRange
@@ -20,7 +23,7 @@ for DbScanRadio=DbScanRadioRange
   
         predicted = [];
         
-        expected = labelRange(testRange);
+        expected = labelRange2(testRange);
         
         for test=testRange
             DESCRIPTORS =  F(channel, labelRange(test), test).descriptors;
@@ -44,7 +47,7 @@ for DbScanRadio=DbScanRadioRange
             %end
             
             
-            if (graphics)
+            if (graphics && 1==0)
                 for i=1:size(DESCRIPTORS',1)
                     KL=DESCRIPTORS';
                     if (Labels(i) == 1)
@@ -104,7 +107,7 @@ end
 if (graphics)
     figure
     plot(Performance(7,:));
-    title(sprintf('Exp.%d:Channel %10.3f - MinPts %10.3f', 67, channel, minPts));
+    title(sprintf('Exp.%d:Channel %10.3f', expcode, channel));
     xlabel('DbscanRadio')
     ylabel('ACC')
     axis([0 500 0 1.3]);    

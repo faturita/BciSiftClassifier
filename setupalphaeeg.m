@@ -30,7 +30,7 @@ for epoch=epochRange     % subject
         subject = epoch;
     end
     
-    directory = sprintf('Rodrigo%s',filesep);
+    directory = sprintf('NNMontani%s',filesep);
     file = sprintf('eeg_%s_%i.dat',filename,subject);
     
     fprintf('%s%s%s\n', directory, filesep, file );
