@@ -8,7 +8,7 @@ if (exist(sprintf('%s',getimagepath()),'dir'))
 end
 
 % Clean Descriptor Directory
-if (exist(sprintf('%s',getdatabasepath()),'dir'))
+if (exist(sprintf('%s',getdescriptorpath()),'dir'))
     delete(sprintf('%s%s*.dat',getdatabasepath(),filesep));
 end
 

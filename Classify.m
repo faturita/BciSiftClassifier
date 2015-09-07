@@ -13,8 +13,6 @@ clear Performance;
 sM = dlmread('sM.dat');
 sMLabel = dlmread('SMLabel.dat');
 
-labelRange2 = shuffle(labelRange)
-
 
 for DbScanRadio=DbScanRadioRange
     % Classify Something based on sM subMatrix, F, testRange, labelRange
@@ -23,7 +21,7 @@ for DbScanRadio=DbScanRadioRange
   
         predicted = [];
         
-        expected = labelRange2(testRange);
+        expected = labelRange(testRange);
         
         for test=testRange
             DESCRIPTORS =  F(channel, labelRange(test), test).descriptors;

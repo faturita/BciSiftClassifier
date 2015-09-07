@@ -45,7 +45,7 @@ for k=1:size(C,1)
     if (sizes(k)>=1)
         % channel, label, epoch
         %[C(k,1) C(k,2) C(k,3) C(k,4)]
-        DisplayDescriptorImage(F(C(k,1),C(k,2),C(k,3)).frames, F(C(k,1),C(k,2),C(k,3)).descriptors, C(k,3),C(k,2),C(k,1),C(k,4)); 
+        %DisplayDescriptorImage(F(C(k,1),C(k,2),C(k,3)).frames, F(C(k,1),C(k,2),C(k,3)).descriptors, C(k,3),C(k,2),C(k,1),C(k,4)); 
         
         fprintf('Distinguished Descriptor: %2d.%2d.%2d:%3d ', C(k,1),C(k,2),C(k,3),C(k,4));
         

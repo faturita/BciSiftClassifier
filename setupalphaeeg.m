@@ -7,10 +7,15 @@ if (exist(sprintf('%s',getimagepath()),'dir'))
     delete(sprintf('%s%s*.*',getimagepath(),filesep));
 end
 
+% Clean Descriptor Directory
+if (exist(sprintf('%s',getdatabasepath()),'dir'))
+    delete(sprintf('%s%s*.dat',getdatabasepath(),filesep));
+end
+
 % Parameters ==============
 epochRange = 1:30;
 channelRange=1:14;
-labelRange = [ones(1,15) ones(1,15)+1];
+labelRange = [ones(1,15)+1 ones(1,15)];
 imagescale=1;siftscale=1;siftdescriptordensity=1;
 % =========================
 
@@ -19,9 +24,9 @@ for epoch=epochRange     % subject
     label=labelRange(epoch);   % experiment
 
     if (label == 1)
-        filename='EyesClosed';
-    else
         filename='EyesOpen';
+    else
+        filename='EyesClosed';
     end
     
     if (epoch>=16)
@@ -30,7 +35,7 @@ for epoch=epochRange     % subject
         subject = epoch;
     end
     
-    directory = sprintf('NNMontani%s',filesep);
+    directory = sprintf('Rodrigo%s',filesep);
     file = sprintf('eeg_%s_%i.dat',filename,subject);
     
     fprintf('%s%s%s\n', directory, filesep, file );

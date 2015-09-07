@@ -1,9 +1,9 @@
 % Parameters ==============================
 DbScanRadio=110;minPts=2;channel=7;graphics=1; comps=0; 
-trainingRange=[1:10 16:25];
-testRange=[11:15 26:30];
+trainingRange=epochRange; %[1:10 16:25];
+testRange=epochRange; %[11:15 26:30];
 channelRange=7:7;
-DbScanRadioRange=200:200;
+DbScanRadioRange=160:160;
 prompt = 'Experiment? ';
 expcode = input(prompt);
 %==========================================

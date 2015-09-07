@@ -7,23 +7,23 @@ if (exist(sprintf('%s',getimagepath()),'dir'))
     delete(sprintf('%s%s*.*',getimagepath(),filesep));
 end
 
+% Clean Descriptor Directory
+if (exist(sprintf('%s',getdatabasepath()),'dir'))
+    delete(sprintf('%s%s*.dat',getdatabasepath(),filesep));
+end
 
+% Parameters ==========================
 epochRange = 1:200;
 channelRange=1:14;
 labelRange = [ones(1,100) ones(1,100)+1];
 imagescale=1;
 siftscale=1;
 siftdescriptordensity=12;
+% =====================================
 
 for epoch=epochRange     % subject
 
     label=labelRange(epoch);   % experiment
-
-    if (label == 1)
-        filename='EyesClosed';
-    else
-        filename='EyesOpen';
-    end
     
     if (epoch>101)
         subject=epoch-100;
