@@ -7,27 +7,32 @@ if (exist(sprintf('%s',getimagepath()),'dir'))
     delete(sprintf('%s%s*.*',getimagepath(),filesep));
 end
 
+% Clean Descriptor Directory
+if (exist(sprintf('%s',getdescriptorpath()),'dir'))
+    delete(sprintf('%s%s*.dat',getdescriptorpath(),filesep));
+end
 
-epochRange = 1:30;
+
+% Parameters ==============
+epochRange = 1:20;
 channelRange=1:14;
-labelRange = [ones(1,15) ones(1,15)+1];
-imagescale=1;
-siftscale=1;
-siftdescriptordensity=12;
+labelRange = [ones(1,15)+1 ones(1,15)];
+imagescale=1;siftscale=1;siftdescriptordensity=1;
+% =========================
 
 for epoch=epochRange     % subject
 
     label=labelRange(epoch);   % experiment
     
-    if (epoch>10)
-        subject=epoch-10;
+    if (epoch>(size(epochRange,2)/2))
+        subject=epoch-(size(epochRange,2)/2);
     else
         subject=epoch;
     end
     
     
     %output = loadepoceegraw(sprintf('Rodrigo//session%d',mod(session,label)+1),sprintf('eeg_%s_%i.dat',filename,mod(subject,10)),1); 
-    output=loadepoceegraw('NNMontani',sprintf('e.%d.l.%d.dat',subject,label),1);
+    output=loadepoceegraw('Rodrigo\\Pestaneo',sprintf('e.%d.l.%d.dat',subject,label),1);
 
         
     for channel=channelRange

@@ -3,7 +3,7 @@ DbScanRadio=110;minPts=2;channel=7;graphics=1; comps=0;
 trainingRange=epochRange; %[1:10 16:25];
 testRange=epochRange; %[11:15 26:30];
 channelRange=7:7;
-DbScanRadioRange=160:160;
+DbScanRadioRange=207:207;
 prompt = 'Experiment? ';
 expcode = input(prompt);
 %==========================================

@@ -8,9 +8,10 @@ if (exist(sprintf('%s',getimagepath()),'dir'))
 end
 
 % Clean Descriptor Directory
-if (exist(sprintf('%s',getdatabasepath()),'dir'))
-    delete(sprintf('%s%s*.dat',getdatabasepath(),filesep));
+if (exist(sprintf('%s',getdescriptorpath()),'dir'))
+    delete(sprintf('%s%s*.dat',getdescriptorpath(),filesep));
 end
+
 
 % Parameters ==========================
 epochRange = 1:200;
@@ -33,9 +34,8 @@ for epoch=epochRange     % subject
     
     
     %output = loadepoceegraw(sprintf('Rodrigo//session%d',mod(session,label)+1),sprintf('eeg_%s_%i.dat',filename,mod(subject,10)),1); 
-    output=loadepoceegraw('Rodrigo/Alfa',sprintf('e.%d.l.%d.dat',subject,label),1);
+    output=loadepoceegraw(sprintf('Rodrigo%sAlfa',filesep),sprintf('e.%d.l.%d.dat',subject,label),1);
 
-        
     for channel=channelRange
         image=eegimagescaled(epoch,label,output,channel,imagescale);
     end

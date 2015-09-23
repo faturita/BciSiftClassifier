@@ -8,13 +8,14 @@ if (exist(sprintf('%s',getimagepath()),'dir'))
 end
 
 % Clean Descriptor Directory
-if (exist(sprintf('%s',getdatabasepath()),'dir'))
-    delete(sprintf('%s%s*.dat',getdatabasepath(),filesep));
+if (exist(sprintf('%s',getdescriptorpath()),'dir'))
+    delete(sprintf('%s%s*.dat',getdescriptorpath(),filesep));
 end
+
 
 % Parameters ==============
 epochRange = 1:30;
-channelRange=1:14;
+channelRange=1:28;
 labelRange = [ones(1,15)+1 ones(1,15)];
 imagescale=1;siftscale=1;siftdescriptordensity=1;
 % =========================
