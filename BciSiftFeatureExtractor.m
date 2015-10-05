@@ -1,6 +1,8 @@
 % expcode,DbScanRadio,minPts,channel,trainingRange,comps,graphics
 function DE = BciSiftFeatureExtractor(F,expcode,DbScanRadio,minPts,channel,trainingRange,labelRange,comps,graphics)
 
+global MM;
+
 clear MM;
 clear M;
 clear DE;
@@ -15,25 +17,30 @@ clear DE;
 % testRange=epochRange;
 % =====================================
 
-fprintf('Building Descriptor Matrix M for Channel %d\n', channel);
+fprintf('Building Descriptor Matrix M for Channel %d:', channel);
 %for channel=channelRange
     
-    % M Matriz de Descriptores, IX indices (chan, label, subject, descId)
-    [M, IX] = BuildDescriptorMatrix(F,channel,labelRange,trainingRange);
+    if (~(exist('MM') && size(MM(channel).M,2) > 1))
+        
+        % M Matriz de Descriptores, IX indices (chan, label, subject, descId)
+        [M, IX] = BuildDescriptorMatrix(F,channel,labelRange,trainingRange);
     
-    if (comps>0)
-        % Centered=false es para que no le reste la media de cada variable
-        [coeff, score, latent] = pca(M','Centered',false);
-        %(cumsum(latent)./sum(latent))'
+        if (comps>0)
+            % Centered=false es para que no le reste la media de cada variable
+            [coeff, score, latent] = pca(M','Centered',false);
+            %(cumsum(latent)./sum(latent))'
 
-        % Esto NO ESTA BIEN, HABRIA QUE HACERLO POR CLASE Y REFORMULAR IX
-        score = score';
-        M=score(1:comps,:);
+            % Esto NO ESTA BIEN, HABRIA QUE HACERLO POR CLASE Y REFORMULAR IX
+            score = score';
+            M=score(1:comps,:);
+        end
+    
+        MM(channel).M = M;
+        MM(channel).IX = IX;
     end
     
-    MM(channel).M = M;
-    MM(channel).IX = IX;
-    
+    fprintf('%d\n', size(MM(channel).M,2));
+        
     %MM(channel).D = squareform(pdist(M'));
 %end
 

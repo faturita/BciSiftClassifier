@@ -88,7 +88,7 @@ else
     end
 end
 %end
-expcode=99;
+
 if (graphics)
     title(sprintf('Exp.%d:Clusters  BCI-SIFT PCA %d Comp', expcode,comps));
     xlabel('X')

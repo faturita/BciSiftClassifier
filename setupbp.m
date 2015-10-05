@@ -21,7 +21,7 @@ channelRange=1:28;
 labelRange = zeros(1,size(epochRange,2));
 imagescale=1;
 siftscale=1;
-siftdescriptordensity=1;
+siftdescriptordensity=12;
 % =====================================
 
 
@@ -50,11 +50,10 @@ for epoch=epochRange     % subject
     
     %output= output(:,14) - output(:,18)
     
-
+    %image=eegimagechannel(epoch,class,output,imagescale);
     for channel=channelRange
         image=eegimagescaled(epoch,class,output,channel,imagescale);
     end
-
 end
 
 labelRange(:)=y_train(1:size(epochRange,2))+1;
@@ -100,11 +99,10 @@ for epoch=317:416     % subject
     %output = score;        
 
     %output= output(:,14) - output(:,18);
-    
+    %image=eegimagechannel(epoch,labelRange(epoch),output,imagescale);
     for channel=channelRange
         image=eegimagescaled(epoch,labelRange(epoch),output,channel,imagescale);
     end
-
 end
 
 epochRange=1:416;

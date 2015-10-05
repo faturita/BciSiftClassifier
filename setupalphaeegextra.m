@@ -26,7 +26,7 @@ for epoch=epochRange     % subject
 
     label=labelRange(epoch);   % experiment
     
-    if (epoch>101)
+    if (epoch>=101)
         subject=epoch-100;
     else
         subject=epoch;
@@ -41,7 +41,6 @@ for epoch=epochRange     % subject
     end
 
 end
-
 
 % Generate and Save all the descriptors...
 SaveDescriptors(labelRange,epochRange,channelRange,10,siftscale, siftdescriptordensity,1);
