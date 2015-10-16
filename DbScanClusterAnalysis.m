@@ -2,7 +2,7 @@
 DbScanRadio=1;minPts=2;channel=7;graphics=1; comps=0; 
 %trainingRange=epochRange; %[1:10 16:25];
 %testRange=epochRange; %[11:15 26:30];
-channelRange=19:19;
+channelRange=7:7;
 DbScanRadioRange=100:300;
 prompt = 'Experiment? ';
 expcode = input(prompt);
@@ -71,31 +71,31 @@ if (1==1)
     figure
     hold on
     plot(Performance(minPts,:),'b');
-    title(sprintf('Exp.%d:Channel %10.3f - MinPts %10.3f', expcode, channel, minPts));
+    title(sprintf('Exp.%d:Channel %d - MinPts %10.3f', expcode, channel, minPts));
     xlabel('DbscanRadio')
     ylabel('#Clusters')
     axis([120 320 0 150]);
     
     
+    plot(Performance(minPts,:)-Performance2(minPts,:),'g');
+    title(sprintf('Exp.%d:Channel %d- MinPts %10.3f', expcode, channel, minPts));
+   
     plot(Performance2(minPts,:),'r');
-    title(sprintf('Exp.%d:Channel %10.3f - MinPts %10.3f', expcode, channel, minPts));
-    xlabel('DbscanRadio')
-    ylabel('#Clusters')
+    title(sprintf('Exp.%d:Channel %d- MinPts %10.3f', expcode, channel, minPts));    
+    
     axis([120 320 0 150]);
     legend('Nonhomogeneous','Homogeneous');
     hold off
 end
 
-K = 30;
+K = minPts;
 D = pdist2(M',M','euclidean','Smallest',K);
 kdist = D(K,:);
 kdistsorted = sort(kdist);
 figure;plot(kdistsorted)
-D = pdist2(M',M','mahalanobis','Smallest',K);
-kdist = D(K,:);
-kdistsorted = sort(kdist);
-figure;plot(kdistsorted)
-D = pdist2(M',M','hamming','Smallest',K);
-kdist = D(K,:);
-kdistsorted = sort(kdist);
-figure;plot(kdistsorted)
+%filter=fspecial('gaussian',[200 1],1);
+x=-10:0.1:10;
+filter = gaussmf(x,[1 0]);
+kdistdiff = diff(kdistsorted);
+kdistdiff = conv(kdistdiff,filter,'same');
+figure;plot(kdistdiff);

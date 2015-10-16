@@ -1,5 +1,5 @@
 % F,DE,featuresize,cluster,channel,testRange 
-function [ACC, SC] = BciSiftClassifier(F,DE,channel,testRange,labelRange,comps,graphics)
+function [ACC, ERR, SC] = BciSiftClassifier(F,DE,channel,testRange,labelRange,comps,graphics)
 % DE.C(cluster).M Radios Label, tiene la informaci?n de la submatriz del
 % cluster.
 
@@ -124,9 +124,13 @@ else
     
     if (size(C,1)==2)
         ACC = (C(1,1)+C(2,2)) / size(predicted,2);
+        ERR = size(predicted,2) - (C(1,1)+C(2,2));
     else
         ACC = (   C(2,2)+C(3,3)  )  / size(predicted,2)  ;
+        ERR = size(predicted,2) - (C(2,2)+C(3,3));
     end
+    
+    
 end
 %end
 

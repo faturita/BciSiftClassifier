@@ -13,7 +13,7 @@
 % ================================
 
 SC = {};
-figure;
+%figure;
 fprintf('Classifying features %d\n', size(DE.CLSTER,2));
 
 % First check if I have at least two differente classes.
@@ -83,9 +83,12 @@ else
     
     if (size(C,1)==2)
         ACC = (C(1,1)+C(2,2)) / size(predicted,2);
+        ERR = size(predicted,2) - (C(1,1)+C(2,2));
     else
         ACC = (   C(2,2)+C(3,3)  )  / size(predicted,2)  ;
-    end
+        ERR = size(predicted,2) - (C(2,2)+C(3,3));
+    end    
+
 end
 %end
 

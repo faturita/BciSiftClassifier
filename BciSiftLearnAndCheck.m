@@ -3,7 +3,7 @@ DbScanRadio=110;minPts=2;channel=7;graphics=1; comps=0;
 %trainingRange=epochRange; %[1:10 16:25];
 %testRange=epochRange; %[11:15 26:30];
 channelRange=7:7;
-DbScanRadioRange=210:210;
+DbScanRadioRange=150:230;
 prompt = 'Experiment? ';
 expcode = input(prompt);
 %==========================================
@@ -13,7 +13,7 @@ for channel=channelRange
     for DbScanRadio=DbScanRadioRange
         fprintf('Channel %10.3f - MinPts %d - Radio: %10.3f\n', channel,minPts, DbScanRadio);
         DE = BciSiftFeatureExtractor(F,expcode,DbScanRadio,minPts,channel,trainingRange,labelRange,0,0);
-        [ACC, SC] = BciSiftClassifier(F,DE,channel,testRange,labelRange,0,0);
+        [ACC, ERR, SC] = BciSiftClassifier(F,DE,channel,testRange,labelRange,0,0);
         Performance(channel, DbScanRadio)= ACC;
     end
 end

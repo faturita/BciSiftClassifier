@@ -14,7 +14,7 @@ end
 
 
 % Parameters ==============
-epochRange = 1:30;
+epochRange = 1:300;
 channelRange=1:14;
 labelRange = [ones(1,size(epochRange,2)/2) ones(1,size(epochRange,2)/2)+1];
 imagescale=1;siftscale=1;siftdescriptordensity=12;

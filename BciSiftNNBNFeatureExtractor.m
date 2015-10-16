@@ -1,3 +1,5 @@
+function DE = BciSiftNBNNFeatureExtractor(F,expcode,DbScanRadio,minPts,channel,trainingRange,labelRange,comps,graphics)
+
 graphics=0;comps=0;
 %channel = 7;
 
@@ -8,11 +10,11 @@ graphics=0;comps=0;
 %testRange=[11:100 111:200];
 
 fprintf('Building Descriptor Matrix M for Channel %d:', channel);
-[M1, IX1] = BuildDescriptorMatrix(F,channel,labelRange,find(labelRange(trainingRange)==1));
+[M1, IX1] = BuildDescriptorMatrix(F,channel,labelRange,trainingRange(find(labelRange(trainingRange)==1)));
 fprintf('%d\n', size(M1,2));
 
 fprintf('Building Descriptor Matrix M for Channel %d:', channel);
-[M2, IX2] = BuildDescriptorMatrix(F,channel,labelRange,find(labelRange(trainingRange)==2));
+[M2, IX2] = BuildDescriptorMatrix(F,channel,labelRange,trainingRange(find(labelRange(trainingRange)==2)));
 fprintf('%d\n', size(M2,2));
 
 DE.C(1).M = M1;
@@ -22,3 +24,5 @@ DE.C(2).M = M2;
 DE.C(2).Label = 2;
 
 DE.CLSTER = [DE.C(1).Label DE.C(2).Label];
+
+end
