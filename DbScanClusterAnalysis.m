@@ -1,15 +1,15 @@
 % Parameters ==============================
-DbScanRadio=1;minPts=2;channel=7;graphics=1; comps=0; 
+DbScanRadio=1;minPts=2;channel=1;graphics=1; comps=0; 
 %trainingRange=epochRange; %[1:10 16:25];
 %testRange=epochRange; %[11:15 26:30];
-channelRange=19:19;
-DbScanRadioRange=100:300;
+channelRange=1:1;
+DbScanRadioRange=150:2880;
 prompt = 'Experiment? ';
 expcode = input(prompt);
 %==========================================
 
 Performance=[];
-for minPts=2:15
+for minPts=6:6
     for DbScanRadio=DbScanRadioRange
         fprintf('Channel %d - MinPts %d - Radio: %10.3f\n', channel,minPts, DbScanRadio);
         [M, IX] = BuildDescriptorMatrix(F,channel,labelRange,trainingRange);
@@ -82,16 +82,31 @@ if (1==1)
     xlabel('DbscanRadio')
     ylabel('#Clusters')
     axis([120 320 0 150]);
-    legend('Nonhomogeneous','Homogeneous');
+   
+    
+    plot(Performance(minPts,:)-Performance2(minPts,:),'g');
+    title(sprintf('Exp.%d:Channel %10.3f - MinPts %10.3f', expcode, channel, minPts));
+    xlabel('DbscanRadio')
+    ylabel('#Clusters')
+    axis([120 320 0 150]);
+    legend('Nonhomogeneous','Homogeneous','Difference');
     hold off
 end
 
-K = 30;
+K = minPts;
 D = pdist2(M',M','euclidean','Smallest',K);
 kdist = D(K,:);
 kdistsorted = sort(kdist);
+title(sprintf('k-Dist-Exp.%d:Channel %d - MinPts %10.3f', expcode, channel, minPts));
 figure;plot(kdistsorted)
-D = pdist2(M',M','mahalanobis','Smallest',K);
+
+
+D = diff(kdistsorted);
+title(sprintf('(k-Dist)-Exp.%d:Channel %d - MinPts %10.3f', expcode, channel, minPts));
+figure;plot(D);
+
+
+D = pdist2(M',M','minkowski',1,'Smallest',K);
 kdist = D(K,:);
 kdistsorted = sort(kdist);
 figure;plot(kdistsorted)
