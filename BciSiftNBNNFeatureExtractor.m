@@ -18,9 +18,11 @@ fprintf('%d\n', size(M2,2));
 
 DE.C(1).M = M1;
 DE.C(1).Label = 1;
+DE.C(1).IX = IX1;
 
 DE.C(2).M = M2;
 DE.C(2).Label = 2;
+DE.C(2).IX = IX2;
 
 DE.CLSTER = [DE.C(1).Label DE.C(2).Label];
 

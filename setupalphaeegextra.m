@@ -19,7 +19,7 @@ channelRange=1:14;
 labelRange = [ones(1,100) ones(1,100)+1];
 imagescale=1;
 siftscale=1;
-siftdescriptordensity=12;
+siftdescriptordensity=24;
 % =====================================
 
 for epoch=epochRange     % subject
@@ -27,14 +27,12 @@ for epoch=epochRange     % subject
     label=labelRange(epoch);   % experiment
     
     if (epoch>=101)
-        subject=epoch-100;
+        epochfileindex=epoch-100;
     else
-        subject=epoch;
+        epochfileindex=epoch;
     end
     
-    
-    %output = loadepoceegraw(sprintf('Rodrigo//session%d',mod(session,label)+1),sprintf('eeg_%s_%i.dat',filename,mod(subject,10)),1); 
-    output=loadepoceegraw(sprintf('Rodrigo%sAlfa',filesep),sprintf('e.%d.l.%d.dat',subject,label),1);
+    output=loadepoceegraw(sprintf('Rodrigo%sAlfa',filesep),sprintf('e.%d.l.%d.dat',epochfileindex,label),1);
 
     for channel=channelRange
         image=eegimagescaled(epoch,label,output,channel,imagescale);

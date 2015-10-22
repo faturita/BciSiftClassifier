@@ -1,10 +1,5 @@
 function [ACC, ERR, SC] = BciSiftNBNNClassifier(F,DE,channel,testRange,labelRange,comps,graphics)
 
-% Parameters =====================
-%testRange = [11:15 26:30];
-%testRange=epochRange;
-% ================================
-
 SC = {};
 %figure;
 fprintf('Classifying features %d\n', size(DE.CLSTER,2));
@@ -19,7 +14,7 @@ elseif (size(DE.C,2)<2)
 else
     %for channel=channelRange
     fprintf ('Channel %d -------------\n', channel);
-  
+    
     %M = MM(channel).M;
     %IX = MM(channel).IX;
     
@@ -46,7 +41,16 @@ else
                 
                 [IDX,D] = knnsearch(DE.C(cluster).M',(DESCRIPTORS(:,descriptor))');
                 SUM = SUM + D(1);
-
+                
+                if (D(1) == 0)
+                    DE.C(cluster).IX(IDX,:)
+                    [channel labelRange(test) test descriptor]
+                    beep
+                    disp('Copycat Descriptors -----------------------------------');
+                end
+                
+                
+                
             end
             SUMSUM = [SUMSUM SUM];
         end
@@ -65,7 +69,7 @@ else
                 end
             end
         end
-
+        
     end
     
     C=confusionmat(expected, predicted)
@@ -78,10 +82,11 @@ else
         ACC = (C(1,1)+C(2,2)) / size(predicted,2);
         ERR = size(predicted,2) - (C(1,1)+C(2,2));
     else
+        error('IT MUST BE ONE OR THE OTHER.  Confucion matrix is not 2-2.');
         ACC = (   C(2,2)+C(3,3)  )  / size(predicted,2)  ;
         ERR = size(predicted,2) - (C(2,2)+C(3,3));
-    end    
-
+    end
+    
 end
 %end
 
