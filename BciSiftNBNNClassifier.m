@@ -39,14 +39,16 @@ else
             SUM = 0;
             for descriptor=1:size(DESCRIPTORS,2)
                 
-                [IDX,D] = knnsearch(DE.C(cluster).M',(DESCRIPTORS(:,descriptor))');
+                %[IDX,D] = knnsearch(DE.C(cluster).M',(DESCRIPTORS(:,descriptor))');
+                [IDX, D] = vl_kdtreequery(DE.C(cluster).KDTree,DE.C(cluster).M,DESCRIPTORS(:,descriptor));
+                
                 SUM = SUM + D(1);
                 
                 if (D(1) == 0)
-                    DE.C(cluster).IX(IDX,:)
-                    [channel labelRange(test) test descriptor]
-                    beep
-                    disp('Copycat Descriptors -----------------------------------');
+                    %DE.C(cluster).IX(IDX,:)
+                    %[channel labelRange(test) test descriptor]
+                    %beep
+                    %disp('Copycat Descriptors -----------------------------------');
                 end
                 
                 
