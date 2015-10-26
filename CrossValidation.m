@@ -2,7 +2,7 @@
 DbScanRadio=210;minPts=2;channel=7;graphics=0; comps=0;
 %trainingRange=epochRange; %[1:10 16:25];
 %testRange=epochRange; %[11:15 26:30];
-channelRange=1:14;
+channelRange=1:64;
 DbScanRadioRange=210:210;  % Useless!
 prompt = 'Experiment? ';
 expcode = input(prompt);
@@ -30,7 +30,7 @@ for channel=channelRange
             %for channel=channelRange
             fprintf('Channel %d - MinPts %d - Radio: %10.3f\n', channel,minPts, DbScanRadio);
             DE = BciSiftNBNNFeatureExtractor(F,expcode,channel,trainingRange,labelRange,graphics);
-            [ACC, ERR, SC] = BciSiftNBNNClassifier(L,DE,channel,testRange,labelRange,0,0);
+            [ACC, ERR, SC] = BciSiftNBNNClassifier(F,DE,channel,testRange,labelRange,0,0);
             Performance(channel, 1)= ACC;
             N(f) = ERR;
             
@@ -73,5 +73,5 @@ if (graphics)
     title(sprintf('Exp.%d:k-fold Cross Validation NBNN',expcode));
     xlabel('Channel')
     ylabel('Error')
-    axis([0 16 0 1.3]);
+    axis([0 64 0 1.3]);
 end
