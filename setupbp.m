@@ -11,16 +11,18 @@ end
 if (exist(sprintf('%s',getdescriptorpath()),'dir'))
     delete(sprintf('%s%s*.dat',getdescriptorpath(),filesep));
 end
-load(sprintf('%s\\BCICompetitionIIDatasetIV\\sp1s_aa.mat',getdrivepath()));
+load(sprintf('%s%sBCICompetitionIIDatasetIV%ssp1s_aa.mat',getdrivepath(),filesep,filesep));
 
 clab;  % electrode labels.
+
+
 
 % Parameters ==========================
 epochRange = 1:316;
 channelRange=1:28;
 labelRange = zeros(1,size(epochRange,2));
 imagescale=1;
-siftscale=1;
+siftscale=2;
 siftdescriptordensity=12;
 % =====================================
 
@@ -64,9 +66,9 @@ labelRange(:)=y_train(1:size(epochRange,2))+1;
 %F = LoadDescriptors(labelRange,epochRange,channelRange);
 
 
-load(sprintf('%s\\BCICompetitionIIDatasetIV\\sp1s_aa_test.txt',getdrivepath()));
+load(sprintf('%s%sBCICompetitionIIDatasetIV%ssp1s_aa_test.txt',getdrivepath(),filesep,filesep));
 
-load(sprintf('%s\\BCICompetitionIIDatasetIV\\labels_data_set_iv.txt',getdrivepath()));
+load(sprintf('%s%sBCICompetitionIIDatasetIV%slabels_data_set_iv.txt',getdrivepath(),filesep,filesep));
 
 
 labels=zeros(1,100);
