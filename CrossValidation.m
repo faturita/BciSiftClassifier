@@ -2,15 +2,15 @@
 DbScanRadio=210;minPts=2;channel=7;graphics=0; comps=0;
 %trainingRange=epochRange; %[1:10 16:25];
 %testRange=epochRange; %[11:15 26:30];
-channelRange=1:64;
+channelRange=1:63;
 DbScanRadioRange=210:210;  % Useless!
 prompt = 'Experiment? ';
 %expcode = input(prompt);
-expcode=880;
+expcode=120;
 %==========================================
 
 for channel=channelRange
-    T=1;
+    T=5;
     KFolds=10;
     E = zeros(T,1);
     

@@ -13,9 +13,9 @@ if (exist(sprintf('%s',getdescriptorpath()),'dir'))
 end
 
 % Eyes open
-[hdr, record1]=edfread('/Users/rramele/Downloads/S001R01.edf');
+[hdr, record1]=edfread('C:\Users\User\Desktop\Data\Datasets\S001R01.edf');
 % Eyes closed
-[hdr, record2]=edfread('/Users/rramele/Downloads/S001R02.edf');
+[hdr, record2]=edfread('C:\Users\User\Desktop\Data\Datasets\S001R02.edf');
 
 record1=record1';
 record2=record2';
@@ -44,7 +44,7 @@ for epoch=epochRange     % subject
         
     d = e-1;
     
-    [epoch 160*d+1 160*(d+1)];
+    [epoch 160*d+1 160*(d+1)]
     
     output=record(160*d+1:160*(d+1),:);
     
