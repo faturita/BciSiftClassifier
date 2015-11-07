@@ -19,7 +19,8 @@ channelRange=1:14;
 labelRange = [ones(1,100) ones(1,100)+1];
 imagescale=1;
 siftscale=1;
-siftdescriptordensity=24;
+siftdescriptordensity=12;
+siftinterpolated=1;
 % =====================================
 
 for epoch=epochRange     % subject
@@ -31,11 +32,17 @@ for epoch=epochRange     % subject
     else
         epochfileindex=epoch;
     end
-    
+
     output=loadepoceegraw(sprintf('Rodrigo%sAlfa',filesep),sprintf('e.%d.l.%d.dat',epochfileindex,label),1);
+    
+    %label=randi(2);
+    %labelRange(epoch)=label;
+    
+    %label=((label-1) && 1)+1;
+    %labelRange(epoch) = label;
 
     for channel=channelRange
-        image=eegimagescaled(epoch,label,output,channel,imagescale);
+        image=eegimagescaled(epoch,label,output,channel,imagescale,siftinterpolated);
     end
 
 end
