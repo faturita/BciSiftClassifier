@@ -12,7 +12,7 @@ if (exist(sprintf('%s',getdescriptorpath()),'dir'))
     delete(sprintf('%s%s*.dat',getdescriptorpath(),filesep));
 end
 
-load('C:\Users\User\Google Drive\BCI.Dataset\002-2014\S14T.mat');
+load('C:\Users\User\Google Drive\BCI.Dataset\002-2014\S02T.mat');
 
 % data{session}
 % 
@@ -28,10 +28,10 @@ load('C:\Users\User\Google Drive\BCI.Dataset\002-2014\S14T.mat');
 %  Baseline  BEEP              CUE                 MI                 REST                           
 
 % Parameters ==========================
-channelRange=[5 8 11];
+channelRange=[5 9 12];
 imagescale=1;
 siftscale=6;
-siftdescriptordensity=10;
+siftdescriptordensity=5;
 siftinterpolated=1;
 % =====================================
 
@@ -45,10 +45,6 @@ for session=1:5
             r=0;
             label=1;lbRange = [lbRange label];
             output= data{session}.X(data{session}.trial(trial)+ r*512:data{session}.trial(trial)+(r+1)*512-1,  :);
-
-            %output(:,5)  = output(:,5)  - 1/4 * (output(:,1)+output(:,4) +output(:,6) +output(:,13));
-            %output(:,8)  = output(:,8)  - 1/4 * (output(:,2)+output(:,7) +output(:,9) +output(:,14));
-            %output(:,11) = output(:,11) - 1/4 * (output(:,3)+output(:,10)+output(:,12)+output(:,15));
             
             [n,m]=size(output);
             output=output - ones(n,1)*mean(output,1);
@@ -62,10 +58,6 @@ for session=1:5
             r=1;
             label=2;lbRange = [lbRange label];
             output= data{session}.X(data{session}.trial(trial)+512*4.25+r*512:data{session}.trial(trial)+512*4.25+(r+1)*512-1,:);
-
-            %output(:,5)  = output(:,5)  - 1/4 * (output(:,1)+output(:,4) +output(:,6) +output(:,13));
-            %output(:,8)  = output(:,8)  - 1/4 * (output(:,2)+output(:,7) +output(:,9) +output(:,14));
-            %output(:,11) = output(:,11) - 1/4 * (output(:,3)+output(:,10)+output(:,12)+output(:,15));
             
             [n,m]=size(output);
             output=output - ones(n,1)*mean(output,1);

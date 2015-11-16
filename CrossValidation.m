@@ -8,7 +8,7 @@ ErrorPerChannel = ones(12,1)*0.5;
 
 
 for channel=channelRange
-    T=3;
+    T=10;
     KFolds=3;
     E = zeros(T,1);
     
@@ -32,15 +32,6 @@ for channel=channelRange
             Performance(channel, 1)= ACC;
             N(f) = ERR;
             
-            %fprintf('Channel %10.3f - MinPts %d - Radio: %10.3f\n', channel,minPts, DbScanRadio);
-            %DE = BciSiftFeatureExtractor(F,expcode,DbScanRadio,minPts,channel,trainingRange,labelRange,0,0);
-            %[ACC, ERR, SC] = BciSiftClassifier(F,DE,channel,testRange,labelRange,0,0);
-            %Performance(channel, DbScanRadio)= ACC;
-            
-            %N(f) = ERR;
-            %ERR
-            %end
-            
             
             if (graphics)
                 figure
@@ -60,16 +51,19 @@ for channel=channelRange
     end
     
     e= sum(E)/T;
-    V = (sum( E - e )^2)  / (T-1);
+    V = (sum( (( E - e ).^2) )  )/ (T-1);
     sigma = sqrt( V );
     ErrorPerChannel(channel)=e;
+    SigmaPerChannel(channel)=sigma;
 end
+
+AccuracyPerChannel = 1-ErrorPerChannel ;
 
 %if (graphics)
     figure
-    bar(ErrorPerChannel(channelRange));
+    bar(AccuracyPerChannel(channelRange));
     title(sprintf('Exp.%d:k(%d)-fold Cross Validation NBNN: %d, %1.2f',expcode,KFolds,siftdescriptordensity,siftscale));
     xlabel('Channel')
-    ylabel('Error')
+    ylabel('Accuracy')
     axis([0 size(channelRange,2)+1 0 1.3]);
 %end

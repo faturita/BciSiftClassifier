@@ -12,7 +12,7 @@ if (exist(sprintf('%s',getdescriptorpath()),'dir'))
     delete(sprintf('%s%s*.dat',getdescriptorpath(),filesep));
 end
 
-load('C:\Users\User\Google Drive\BCI.Dataset\002-2014\S02T.mat');
+load('C:\Users\User\Google Drive\BCI.Dataset\002-2014\S01T.mat');
 
 % data{session}
 % 
@@ -28,10 +28,10 @@ load('C:\Users\User\Google Drive\BCI.Dataset\002-2014\S02T.mat');
 %  Baseline  BEEP              CUE                 MI                 REST                           
 
 % Parameters ==========================
-channelRange=[5 8 11];
+channelRange=[5 9 12];
 imagescale=1;
 siftscale=6;
-siftdescriptordensity=12;
+siftdescriptordensity=10;
 siftinterpolated=1;
 % =====================================
 
