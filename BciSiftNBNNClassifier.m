@@ -37,23 +37,28 @@ else
         SUMSUM = [];
         for cluster=1:size(DE.C,2)
             SUM = 0;
-            for descriptor=1:size(DESCRIPTORS,2)
-                
-                %[IDX,D] = knnsearch(DE.C(cluster).M',(DESCRIPTORS(:,descriptor))');
-                [IDX, D] = vl_kdtreequery(DE.C(cluster).KDTree,DE.C(cluster).M,DESCRIPTORS(:,descriptor));
-                
-                SUM = SUM + D(1);
-                
-                if (D(1) == 0)
-                    %DE.C(cluster).IX(IDX,:)
-                    %[channel labelRange(test) test descriptor]
-                    %beep
-                    %disp('Copycat Descriptors -----------------------------------');
-                end
-                
-                
-                
-            end
+            
+            [IDX, D] = vl_kdtreequery(DE.C(cluster).KDTree,DE.C(cluster).M,DESCRIPTORS);
+            
+            SUM = sum(D);
+                         
+%             for descriptor=1:size(DESCRIPTORS,2)
+%                 
+%                 %[IDX,D] = knnsearch(DE.C(cluster).M',(DESCRIPTORS(:,descriptor))');
+%                 [IDX, D] = vl_kdtreequery(DE.C(cluster).KDTree,DE.C(cluster).M,DESCRIPTORS(:,descriptor));
+%                 
+%                 SUM = SUM + D(1);
+%                 
+%                 if (D(1) == 0)
+%                     %DE.C(cluster).IX(IDX,:)
+%                     %[channel labelRange(test) test descriptor]
+%                     %beep
+%                     %disp('Copycat Descriptors -----------------------------------');
+%                 end
+%                 
+%                 
+%                 
+%             end
             SUMSUM = [SUMSUM SUM];
         end
         [C, I] = min(SUMSUM);
@@ -83,6 +88,10 @@ else
     if (size(C,1)==2)
         ACC = (C(1,1)+C(2,2)) / size(predicted,2);
         ERR = size(predicted,2) - (C(1,1)+C(2,2));
+        SC{1}.TP = C(2,1);
+        SC{1}.FP = C(2,2);
+        SC{1}.TN = C(1,2);
+        SC{1}.FN = C(1,1);
     else
         error('IT MUST BE ONE OR THE OTHER.  Confucion matrix is not 2-2.');
         ACC = (   C(2,2)+C(3,3)  )  / size(predicted,2)  ;

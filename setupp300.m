@@ -29,7 +29,7 @@ channelRange=1:32;
 labelRange = p300.runs{1}.y;
 labelRange(labelRange == 1 ) = 2;   % Hit
 labelRange(labelRange == -1) = 1;   % Nohit
-imagescale=1;
+imagescale=10;
 siftscale=1;
 siftdescriptordensity=1;
 % =====================================
@@ -40,8 +40,11 @@ for epoch=epochRange     % subject
     
     output = p300.runs{1}.x(:, :,epoch)';
     
+    [n,m]=size(output);
+    output=output - ones(n,1)*mean(output,1);
+    
     for channel=channelRange
-        image=eegimagescaled(epoch,label,output,channel,imagescale);
+        image=eegimagescaled(epoch,label,output,channel,imagescale,1);
     end
 
 end
@@ -63,7 +66,7 @@ for epoch=epochRange2     % subject
     output = p300.runs{2}.x(:, :,epoch)';
     
     for channel=channelRange
-        image=eegimagescaled(epoch+135,label,output,channel,imagescale);
+        image=eegimagescaled(epoch+135,label,output,channel,imagescale,1);
     end
 
 end

@@ -2,7 +2,7 @@
 DbScanRadio=210;minPts=2;channel=7;graphics=0; comps=0;
 %trainingRange=epochRange; %[1:10 16:25];
 %testRange=epochRange; %[11:15 26:30];
-channelRange=1:63;
+channelRange=1:14;
 DbScanRadioRange=210:210;  % Useless!
 prompt = 'Experiment? ';
 %expcode = input(prompt);
@@ -10,7 +10,7 @@ expcode=120;
 %==========================================
 
 for channel=channelRange
-    T=5;
+    T=3;
     KFolds=10;
     E = zeros(T,1);
     
@@ -54,7 +54,7 @@ for channel=channelRange
                 axis([0 500 0 1.3]);
             end
             
-            % ------------------------
+            % -hat -----------------------
             
         end
         
@@ -63,16 +63,19 @@ for channel=channelRange
     end
     
     e= sum(E)/T;
-    V = (sum( E - e )^2)  / (T-1);
+    V = (sum((( E - e ).^2)))  / (T-1);
     sigma = sqrt( V );
     ErrorPerChannel(channel)=e;
+    SigmaPerChannel(channel)=sigma;
 end
+
+SigmaPerChannel=SigmaPerChannel.*(1.96/(sqrt(T)));
 
 if (graphics)
     figure
-    plot(ErrorPerChannel);
+    errorbar(AccuracyPerChannel, SigmaPerChannel);
     title(sprintf('Exp.%d:k-fold Cross Validation NBNN',expcode));
     xlabel('Channel')
     ylabel('Error')
-    axis([0 64 0 1.3]);
+    axis([0 14 0 1.3]);
 end

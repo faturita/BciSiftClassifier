@@ -17,7 +17,9 @@ end
 epochRange = 1:300;
 channelRange=1:14;
 labelRange = [ones(1,size(epochRange,2)/2) ones(1,size(epochRange,2)/2)+1];
-imagescale=1;siftscale=1;siftdescriptordensity=12;
+imagescale=1;
+siftscale=0.5;
+siftdescriptordensity=12;
 % =========================
 
 
@@ -25,7 +27,7 @@ for epoch=epochRange     % subject
 
     label=labelRange(epoch);   % experiment
        
-    output = fakeeegoutput(imagescale, label);    
+    output = fakeeegoutput(imagescale, label,512);    
 
     for channel=channelRange
         image=eegimagescaled(epoch,label,output,channel,imagescale);
