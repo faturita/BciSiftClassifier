@@ -14,56 +14,55 @@ elseif (size(DE.C,2)<2)
 else
     %for channel=channelRange
     fprintf ('Channel %d -------------\n', channel);
-    
+
     %M = MM(channel).M;
     %IX = MM(channel).IX;
-    
+
     predicted = [];
-    
+
     expected = labelRange(testRange);
-    
+
     % For each signal window, grab the descriptors and check where they lay
     for test=testRange
         DESCRIPTORS =  F(channel, labelRange(test), test).descriptors;
-        
+
         if (comps>0)
             DESCRIPTORS  =  ((DESCRIPTORS)' * coeff)';
             DESCRIPTORS=DESCRIPTORS(1:comps,:);
         end
-        
-        
+
+
         % Voy a calcular esto: C_hat = arg min SUM || d_i - kNN_c (d_i) ||
-        
+
         SUMSUM = [];
         for cluster=1:size(DE.C,2)
             SUM = 0;
-            
+
             [IDX, D] = vl_kdtreequery(DE.C(cluster).KDTree,DE.C(cluster).M,DESCRIPTORS);
-            
+
             SUM = sum(D);
-                         
+
 %             for descriptor=1:size(DESCRIPTORS,2)
-%                 
+%
 %                 %[IDX,D] = knnsearch(DE.C(cluster).M',(DESCRIPTORS(:,descriptor))');
 %                 [IDX, D] = vl_kdtreequery(DE.C(cluster).KDTree,DE.C(cluster).M,DESCRIPTORS(:,descriptor));
-%                 
+%
 %                 SUM = SUM + D(1);
-%                 
+%
 %                 if (D(1) == 0)
 %                     %DE.C(cluster).IX(IDX,:)
 %                     %[channel labelRange(test) test descriptor]
 %                     %beep
 %                     %disp('Copycat Descriptors -----------------------------------');
 %                 end
-%                 
-%                 
-%                 
+%
 %             end
+
             SUMSUM = [SUMSUM SUM];
         end
         [C, I] = min(SUMSUM);
         predicted = [predicted DE.C(I(1)).Label];
-        
+
         if (graphics)
             for i=1:size(DESCRIPTORS',1)
                 KL=DESCRIPTORS';
@@ -76,30 +75,34 @@ else
                 end
             end
         end
-        
+
     end
-    
+
     C=confusionmat(expected, predicted)
-    
+
     %if (C(1,1)+C(2,2) > 65)
     %    error('done');
     %end
-    
+
     if (size(C,1)==2)
         ACC = (C(1,1)+C(2,2)) / size(predicted,2);
         ERR = size(predicted,2) - (C(1,1)+C(2,2));
+
         SC{1}.TP = C(2,1);
         SC{1}.FP = C(2,2);
         SC{1}.TN = C(1,2);
         SC{1}.FN = C(1,1);
+
+        SC{1}.expected = expected;
+        SC{1}.predicted = predicted;
+
     else
-        error('IT MUST BE ONE OR THE OTHER.  Confucion matrix is not 2-2.');
+        error('IT MUST BE ONE OR THE OTHER.  Confusion matrix is not 2-2.');
         ACC = (   C(2,2)+C(3,3)  )  / size(predicted,2)  ;
         ERR = size(predicted,2) - (C(2,2)+C(3,3));
     end
-    
+
 end
-%end
 
 if (graphics)
     title(sprintf('Exp.%d:Clusters  BCI-SIFT PCA %d Comp', expcode,comps));

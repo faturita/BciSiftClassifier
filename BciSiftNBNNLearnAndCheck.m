@@ -1,13 +1,14 @@
 % Parameters ==============================
-DbScanRadio=110;minPts=2;channel=7;graphics=1; comps=0; 
-%trainingRange=epochRange; %[1:10 16:25];
-%testRange=epochRange; %[11:15 26:30];
+%DbScanRadio=110;minPts=2;channel=7;
+graphics=1; comps=0; 
+trainingRange=epochRange; %[1:10 16:25];
+testRange=epochRange; %[11:15 26:30];
 %trainingRange=[1:75 101:175];
 %testRange=[76:100 176:200];
-channelRange=1:28;
+%channelRange=1:28;
 DbScanRadioRange=210:210;  % Useless!
 prompt = 'Experiment? ';
-expcode = input(prompt);
+expcode=132;
 %==========================================
 
 Performance=[];
@@ -17,7 +18,7 @@ for channel=channelRange
         Performance(channel, 1)= ACC;
 end
 
-
+vl_roc(SC{1}.expected*2-3,SC{1}.predicted*2-3)
 if (graphics)
     figure
     plot(Performance(:,1));

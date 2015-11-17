@@ -14,11 +14,12 @@ end
 
 % S02 da bien
 load(sprintf('/Users/rramele/Google Drive/BCI.Dataset/002-2014/S%02dT.mat',subject));
+%load('C:\Users\User\Google Drive\BCI.Dataset\002-2014\S02T.mat');
 
 % data{session}
-% 
-% ans = 
-% 
+%
+% ans =
+%
 %           X: [112128x15 double]
 %       trial: [1x20 double]
 %           y: [1 1 2 1 1 2 1 1 1 1 2 2 2 2 2 1 2 2 1 2]
@@ -26,7 +27,7 @@ load(sprintf('/Users/rramele/Google Drive/BCI.Dataset/002-2014/S%02dT.mat',subje
 %     classes: {'right hand'  'feet'}
 
 % 0-----------2----------3-----------4.25----------------------8---8.5----10.5
-%  Baseline  BEEP              CUE                 MI                 REST                           
+%  Baseline  BEEP              CUE                 MI                 REST
 
 % Parameters ==========================
 channelRange=[5 8 11];
@@ -41,12 +42,12 @@ ep=1;
 
 for session=1:5
     for trial=1:20
-        if ( data{session}.y(trial) == 2)
+        if ( data{session}.y(trial) == 1)
 
             r=0;
             label=1;lbRange = [lbRange label];
             output= data{session}.X(data{session}.trial(trial)+ r*512:data{session}.trial(trial)+(r+1)*512-1,  :);
-            
+
             [n,m]=size(output);
             output=output - ones(n,1)*mean(output,1);
 
@@ -55,18 +56,18 @@ for session=1:5
             end
             ep=ep+1;
             % =================================
-            
+
             r=0;
             offset=4.5;
             label=2;lbRange = [lbRange label];
             output= data{session}.X(data{session}.trial(trial)+512*offset+r*512:data{session}.trial(trial)+512*offset+(r+1)*512-1,:);
-                      
+
             [n,m]=size(output);
             output=output - ones(n,1)*mean(output,1);
 
             for channel=channelRange
                 image=eegimagescaled(ep,label,output,channel,imagescale, siftinterpolated);
-            end    
+            end
             ep=ep+1;
         end
     end
@@ -74,16 +75,16 @@ end
 
 clear data;
 load(sprintf('/Users/rramele/Google Drive/BCI.Dataset/002-2014/S%02dE.mat',subject));
-
+%load('C:\Users\User\Google Drive\BCI.Dataset\002-2014\S02E.mat');
 
 for session=1:3
     for trial=1:20
-        if ( data{session}.y(trial) == 2)
+        if ( data{session}.y(trial) == 1)
 
             r=0;
             label=1;lbRange = [lbRange label];
             output= data{session}.X(data{session}.trial(trial)+ r*512:data{session}.trial(trial)+(r+1)*512-1,  :);
-            
+
             [n,m]=size(output);
             output=output - ones(n,1)*mean(output,1);
 
@@ -92,18 +93,18 @@ for session=1:3
             end
             ep=ep+1;
             % =================================
-            
+
             r=0;
             offset=4.5;
             label=2;lbRange = [lbRange label];
-            output= data{session}.X(data{session}.trial(trial)+512*offset+r*512:data{session}.trial(trial)+512*offset+(r+1)*512-1,:);           
-                        
+            output= data{session}.X(data{session}.trial(trial)+512*offset+r*512:data{session}.trial(trial)+512*offset+(r+1)*512-1,:);
+
             [n,m]=size(output);
             output=output - ones(n,1)*mean(output,1);
 
             for channel=channelRange
                 image=eegimagescaled(ep,label,output,channel,imagescale, siftinterpolated);
-            end    
+            end
             ep=ep+1;
         end
     end
@@ -129,7 +130,7 @@ trainingRange=1:100;
 testRange=101:160;
 
 for channel=channelRange
-     
+
     % --------------------------
     Performance=[];
     %for channel=channelRange
@@ -160,7 +161,7 @@ if (graphics)
     set(gca,'YTick', [0 0.7]);
     set(0, 'DefaultAxesFontSize',24);
     set(hx,'fontSize',20);
-    set(hy,'fontSize',20);  
+    set(hy,'fontSize',20);
 end
 
 save(sprintf('S.%d.T.2.mat',subject));

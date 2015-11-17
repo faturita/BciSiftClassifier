@@ -25,19 +25,24 @@ siftdescriptordensity=12;
 for epoch=epochRange     % subject
 
     label=labelRange(epoch);   % experiment
-    
+
     if (epoch>=101)
         epochfileindex=epoch-100;
     else
         epochfileindex=epoch;
     end
-    
-    output=loadepoceegraw(sprintf('Esteban%sAlfa',filesep),sprintf('e.%d.l.%d.dat',epochfileindex,label),1);
+
+    output=loadepoceegraw(sprintf('Rodrigo%sAlfa',filesep),sprintf('e.%d.l.%d.dat',epochfileindex,label),1);
+
+    %label=randi(2);
+    %labelRange(epoch)=label;
+
+    %label=((label-1) && 1)+1;
+    %labelRange(epoch) = label;
 
     for channel=channelRange
-        image=eegimagescaled(epoch,label,output,channel,imagescale,0);
+        image=eegimagescaled(epoch,label,output,channel,imagescale,siftinterpolated);
     end
-sdfds
 end
 
 % Generate and Save all the descriptors...
