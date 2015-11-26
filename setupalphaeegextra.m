@@ -20,6 +20,7 @@ labelRange = [ones(1,100) ones(1,100)+1];
 imagescale=1;
 siftscale=1;
 siftdescriptordensity=12;
+siftinterpolated=1;
 % =====================================
 
 for epoch=epochRange     % subject
@@ -32,7 +33,7 @@ for epoch=epochRange     % subject
         epochfileindex=epoch;
     end
 
-    output=loadepoceegraw(sprintf('Rodrigo%sAlfa',filesep),sprintf('e.%d.l.%d.dat',epochfileindex,label),1);
+    output=loadepoceegraw(sprintf('Rodrigo%sMano',filesep),sprintf('e.%d.l.%d.dat',epochfileindex,label),1);
 
     %label=randi(2);
     %labelRange(epoch)=label;

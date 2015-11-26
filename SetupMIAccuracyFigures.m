@@ -1,3 +1,9 @@
+% This script generates the graphics published here and here.
+% It retrieves the results of applying the BciSift classification algorithm
+% after applying a 10-Fold CrossValidation procedure, while discriminating
+% between Baseline vs Right Hand Imagery.
+%
+% S.1.T -> Contains all the results of the Training
 acs = [];
 for subject=1:14
     

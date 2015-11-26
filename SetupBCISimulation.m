@@ -1,3 +1,8 @@
+% ========================================================================
+% This script performs a BCISimulation procedure for the BCISift
+% classification algorithm, differentiating right-hand vs feet movement.
+%
+% For all subjects
 for subject=1:14
 
 close all;clearvars -except subject;clc;
@@ -13,8 +18,7 @@ if (exist(sprintf('%s',getdescriptorpath()),'dir'))
 end
 
 % S02 da bien
-load(sprintf('/Users/rramele/Google Drive/BCI.Dataset/002-2014/S%02dT.mat',subject));
-%load('C:\Users\User\Google Drive\BCI.Dataset\002-2014\S02T.mat');
+load(sprintf('%s\002-2014/S%02dT.mat', getdatasetpath(), subject));
 
 % data{session}
 %
@@ -74,8 +78,7 @@ for session=1:5
 end
 
 clear data;
-load(sprintf('/Users/rramele/Google Drive/BCI.Dataset/002-2014/S%02dE.mat',subject));
-%load('C:\Users\User\Google Drive\BCI.Dataset\002-2014\S02E.mat');
+load(sprintf('%s\002-2014/S%02dE.mat', getdatasetpath(), subject));
 
 for session=1:3
     for trial=1:20
