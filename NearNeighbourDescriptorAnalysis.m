@@ -31,7 +31,6 @@ for degradation=1:50
     for channel=channelRange
 
         % --------------------------
-        Performance=[];
         %for channel=channelRange
         fprintf('Channel %d\n', channel);
         DE = BciSiftNBNNFeatureExtractor(L,expcode,channel,trainingRange,labelRange,graphics);
