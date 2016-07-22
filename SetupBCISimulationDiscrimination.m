@@ -4,8 +4,8 @@
 %
 % USEME TO TEST FOR ONLY ONE SUBJECT
 %
-%
-close all;clear;clc;
+% run('VLFEATROOT/toolbox/vl_setup')
+clear mex;clear all;close all;clear;clc;
 
 % Clean EEG image directory
 if (exist(sprintf('%s',getimagepath()),'dir'))
@@ -18,7 +18,7 @@ if (exist(sprintf('%s',getdescriptorpath()),'dir'))
 end
 
 % S02 da bien
-load(sprintf('%s\002-2014\S02T.mat', getdatasetpath()));
+load(sprintf('%s/002-2014/S02T.mat', getdatasetpath()));
 
 % data{session}
 % 
@@ -62,7 +62,7 @@ for session=1:5
     end
 end
 
-load(sprintf('%s\002-2014\S02E.mat', getdatasetpath()));
+load(sprintf('%s/002-2014/S02T.mat', getdatasetpath()));
 
 for session=1:3
     for trial=1:20
