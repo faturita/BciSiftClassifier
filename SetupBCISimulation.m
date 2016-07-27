@@ -2,8 +2,9 @@
 % This script performs a BCISimulation procedure for the BCISift
 % classification algorithm, differentiating right-hand vs feet movement.
 %
+% run('/Users/rramele/work/vlfeat-0.9.20/toolbox/vl_setup')
 % For all subjects
-for subject=1:14
+for subject=13:13
 
 close all;clearvars -except subject;clc;
 
@@ -18,7 +19,7 @@ if (exist(sprintf('%s',getdescriptorpath()),'dir'))
 end
 
 % S02 da bien
-load(sprintf('%s\002-2014/S%02dT.mat', getdatasetpath(), subject));
+load(sprintf('%s/002-2014/S%02dT.mat', getdatasetpath(), subject));
 
 % data{session}
 %
@@ -34,10 +35,10 @@ load(sprintf('%s\002-2014/S%02dT.mat', getdatasetpath(), subject));
 %  Baseline  BEEP              CUE                 MI                 REST
 
 % Parameters ==========================
-channelRange=[5 8 11];
+channelRange=[11];
 imagescale=1;
 siftscale=6;
-siftdescriptordensity=5;
+siftdescriptordensity=10;
 siftinterpolated=0;
 % =====================================
 
@@ -52,6 +53,9 @@ for session=1:5
             label=1;lbRange = [lbRange label];
             output= data{session}.X(data{session}.trial(trial)+ r*512:data{session}.trial(trial)+(r+1)*512-1,  :);
 
+            
+            %output = LaplacianSpatialFilter(output,11,3,10,12,15)
+            
             [n,m]=size(output);
             output=output - ones(n,1)*mean(output,1);
 
@@ -66,6 +70,8 @@ for session=1:5
             label=2;lbRange = [lbRange label];
             output= data{session}.X(data{session}.trial(trial)+512*offset+r*512:data{session}.trial(trial)+512*offset+(r+1)*512-1,:);
 
+            %output = LaplacianSpatialFilter(output,11,3,10,12,15)
+            
             [n,m]=size(output);
             output=output - ones(n,1)*mean(output,1);
 
@@ -78,7 +84,7 @@ for session=1:5
 end
 
 clear data;
-load(sprintf('%s\002-2014/S%02dE.mat', getdatasetpath(), subject));
+load(sprintf('%s/002-2014/S%02dE.mat', getdatasetpath(), subject));
 
 for session=1:3
     for trial=1:20
