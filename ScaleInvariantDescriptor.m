@@ -1,6 +1,5 @@
-run('C:/vlfeat/toolbox/vl_setup')
+%run('C:/Users/rramele/workspace/vlfeat/toolbox/vl_setup')
 
-clear mex;clear all;
 clear mex;clear all;close all;clear;clc;
 
 % Clean EEG image directory
@@ -14,12 +13,13 @@ if (exist(sprintf('%s',getdescriptorpath()),'dir'))
 end
 
 % Parameters ==============
-epochRange = 1:300;
-channelRange=1:14;
-labelRange = [ones(1,size(epochRange,2)/2) ones(1,size(epochRange,2)/2)+1];
+epochRange = 1:1;
+channelRange=1:1;
+%labelRange = [ones(1,size(epochRange,2)/2) ones(1,size(epochRange,2)/2)+1];
+labelRange = 1;
 imagescale=1;
-siftscale=0.5;
-siftdescriptordensity=12;
+siftscale=1;
+siftdescriptordensity=1;
 % =========================
 
 
@@ -27,7 +27,7 @@ for epoch=epochRange     % subject
 
     label=labelRange(epoch);   % experiment
        
-    output = fakeeegoutput(imagescale, label,512);    
+    output = fakeeegoutput(imagescale, label,128,14);    
 
     for channel=channelRange
         image=eegimagescaled(epoch,label,output,channel,imagescale);
@@ -35,6 +35,15 @@ for epoch=epochRange     % subject
 
 end
 
+KS = [10,60, 90];
+
 % Generate and Save all the descriptors...
-SaveDescriptors(labelRange,epochRange,channelRange,10,siftscale, siftdescriptordensity,1);
+SaveDescriptors(labelRange,epochRange,channelRange,10,siftscale, siftdescriptordensity,1,KS);
 F = LoadDescriptors(labelRange,epochRange,channelRange);
+
+DisplayDescriptorImageFull(F,1,1,1,-1);
+
+
+F(1,1,1).descriptors = [ sum(F(1,1,1).descriptors,2)];
+
+

@@ -18,7 +18,7 @@ if (exist(sprintf('%s',getdescriptorpath()),'dir'))
 end
 
 % S02 da bien
-load(sprintf('%s\002-2014/S%02dT.mat', getdatasetpath(), subject));
+load(sprintf('%s/002-2014/S%02dT.mat', getdatasetpath(), subject));
 
 % data{session}
 %
@@ -78,7 +78,7 @@ for session=1:5
 end
 
 clear data;
-load(sprintf('%s\002-2014/S%02dE.mat', getdatasetpath(), subject));
+load(sprintf('%s/002-2014/S%02dE.mat', getdatasetpath(), subject));
 
 for session=1:3
     for trial=1:20
@@ -117,7 +117,7 @@ epochRange=1:ep-1;
 labelRange=lbRange;
 
 % Generate and Save all the descriptors...
-SaveDescriptors(labelRange,epochRange,channelRange,10,siftscale, siftdescriptordensity,1);
+SaveDescriptors(labelRange,epochRange,channelRange,10,siftscale, siftdescriptordensity,1,[]);
 F = LoadDescriptors(labelRange,epochRange,channelRange);
 
 % Parameters ==============================
@@ -167,6 +167,6 @@ if (graphics)
     set(hy,'fontSize',20);
 end
 
-save(sprintf('S.%d.T.2.mat',subject));
+%save(sprintf('S.%d.T.2.mat',subject));
 
 end
