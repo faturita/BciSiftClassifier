@@ -54,7 +54,7 @@ for session=1:5
             output= data{session}.X(data{session}.trial(trial)+ r*512:data{session}.trial(trial)+(r+1)*512-1,  :);
 
             
-            %output = LaplacianSpatialFilter(output,11,3,10,12,15)
+            output = LaplacianSpatialFilter(output,11,3,10,12,15);
             
             [n,m]=size(output);
             output=output - ones(n,1)*mean(output,1);
@@ -70,7 +70,7 @@ for session=1:5
             label=2;lbRange = [lbRange label];
             output= data{session}.X(data{session}.trial(trial)+512*offset+r*512:data{session}.trial(trial)+512*offset+(r+1)*512-1,:);
 
-            %output = LaplacianSpatialFilter(output,11,3,10,12,15)
+            output = LaplacianSpatialFilter(output,11,3,10,12,15);
             
             [n,m]=size(output);
             output=output - ones(n,1)*mean(output,1);
@@ -94,6 +94,8 @@ for session=1:3
             label=1;lbRange = [lbRange label];
             output= data{session}.X(data{session}.trial(trial)+ r*512:data{session}.trial(trial)+(r+1)*512-1,  :);
 
+            output = LaplacianSpatialFilter(output,11,3,10,12,15);
+            
             [n,m]=size(output);
             output=output - ones(n,1)*mean(output,1);
 
@@ -107,7 +109,9 @@ for session=1:3
             offset=4.5;
             label=2;lbRange = [lbRange label];
             output= data{session}.X(data{session}.trial(trial)+512*offset+r*512:data{session}.trial(trial)+512*offset+(r+1)*512-1,:);
-
+            
+            output = LaplacianSpatialFilter(output,11,3,10,12,15);
+            
             [n,m]=size(output);
             output=output - ones(n,1)*mean(output,1);
 
