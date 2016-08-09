@@ -27,7 +27,7 @@ for epoch=epochRange     % subject
 
     label=labelRange(epoch);   % experiment
        
-    output = fakeeegoutput(imagescale, label,128,14);    
+    output = fakeeegoutput(imagescale, label,channelRange,128);    
 
     for channel=channelRange
         image=eegimagescaled(epoch,label,output,channel,imagescale);

@@ -36,8 +36,8 @@ load(sprintf('%s/002-2014/S%02dT.mat', getdatasetpath(), subject));
 
 % Parameters ==========================
 channelRange=[11];
-imagescale=1;
-siftscale=6;
+imagescale=3;
+siftscale=12;
 siftdescriptordensity=10;
 siftinterpolated=0;
 % =====================================
@@ -53,7 +53,6 @@ for session=1:5
             label=1;lbRange = [lbRange label];
             output= data{session}.X(data{session}.trial(trial)+ r*512:data{session}.trial(trial)+(r+1)*512-1,  :);
 
-            
             output = LaplacianSpatialFilter(output,11,3,10,12,15);
             
             [n,m]=size(output);
