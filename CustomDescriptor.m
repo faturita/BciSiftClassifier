@@ -6,7 +6,7 @@ epochRange = 1:1;
 channelRange=1:1;
 labelRange = 1:1;
 imagescale=1;
-siftscale=1;
+siftscale=2;
 siftdescriptordensity=1;
 % =========================
 
@@ -18,7 +18,7 @@ output = fakeeegoutput(imagescale, label,channelRange,128);
 image=eegimagescaled(epoch,label,output,channel,imagescale);
 
 
-SAMPLELOCS = [ 20];
+SAMPLELOCS = [ 20 ];
 
 fprintf('Saving Descriptors...\n');
 psiftscale=siftscale;
