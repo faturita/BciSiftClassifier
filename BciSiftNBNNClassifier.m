@@ -88,10 +88,10 @@ else
         ACC = (C(1,1)+C(2,2)) / size(predicted,2);
         ERR = size(predicted,2) - (C(1,1)+C(2,2));
 
-        SC{1}.TP = C(2,1);
-        SC{1}.FP = C(2,2);
-        SC{1}.TN = C(1,2);
-        SC{1}.FN = C(1,1);
+        SC{1}.FP = C(2,1);
+        SC{1}.TP = C(2,2);
+        SC{1}.FN = C(1,2);
+        SC{1}.TN = C(1,1);
 
         SC{1}.expected = expected;
         SC{1}.predicted = predicted;

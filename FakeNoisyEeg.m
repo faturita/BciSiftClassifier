@@ -1,7 +1,6 @@
-function output = FakeNoisyEeg(channelRange,nSampleFreq)
+function output = FakeNoisyEeg(amplitude,channelRange,nSampleFreq)
 channels = size(channelRange,2);
 
-amplitude = 1;
 nSines = 100;
 SampleRate = 1000;
 fMin = 0;

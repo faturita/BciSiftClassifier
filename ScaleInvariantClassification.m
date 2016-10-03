@@ -22,24 +22,20 @@
 
 clear mex;clear all;close all;clear;clc;
 
-% Clean EEG image directory
-if (exist(sprintf('%s',getimagepath()),'dir'))
-    delete(sprintf('%s%s*.*',getimagepath(),filesep));
-end
-
-% Clean Descriptor Directory
-if (exist(sprintf('%s',getdescriptorpath()),'dir'))
-    delete(sprintf('%s%s*.dat',getdescriptorpath(),filesep));
-end
+% Clean all the directories where the images are located.
+cleanimagedirectory();
 
 % Parameters ==============
-epochRange = 1:300;
+epochRange = 1:120;
 channelRange=1:1;
 labelRange = [ones(1,100) ones(1,100)+1 ones(1,50) ones(1,50)+1];
+labelRange = randi(2,1,120);
 %labelRange = 1;
-imagescale=10;
-siftscale=3;
+imagescale=1;
+siftscale=4;
 siftdescriptordensity=1;
+Fs=256;
+length=1;
 % =========================
 
 
@@ -47,7 +43,7 @@ for epoch=epochRange     % subject
 
     label=labelRange(epoch);   % experiment
        
-    output = fakep300(imagescale, label,channelRange,32);    
+    output = fakep300(imagescale, label,channelRange,Fs);    
 
     for channel=channelRange
         image=eegimagescaled(epoch,label,output,channel,imagescale);
@@ -60,9 +56,15 @@ end
 
 %KS = 38*(imagescale):38*(imagescale);
 
+delta=2;
+% Restrict where to put the descriptors but based on the specified density
+KS = 64:64+32-1;
+KS = 64+40+delta;
+KS = 86+floor(46/2);
+
 % Generate and Save all the descriptors...
 % Si te quedas con F de aca pincha por el tipo de dato.
-SaveDescriptors(labelRange,epochRange,channelRange,10,siftscale, siftdescriptordensity,1,[]);
+SaveDescriptors(labelRange,epochRange,channelRange,10,siftscale, siftdescriptordensity,1,KS);
 F = LoadDescriptors(labelRange,epochRange,channelRange);
 
 %F = SynthesizeDescriptors(F, labelRange, epochRange, channelRange,12);
@@ -79,8 +81,9 @@ expcode=132;
 ErrorPerChannel = ones(12,1)*0.5;
 Pij=zeros(size(channelRange,2),1,1);
 
-trainingRange=1:200;
-testRange=201:300;
+trainingRange=1:100;
+testRange=101:120;
+delta=1;
 
 for channel=channelRange
 
@@ -90,7 +93,7 @@ for channel=channelRange
     fprintf('Channel %d\n', channel);
     DE = BciSiftNBNNFeatureExtractor(F,expcode,channel,trainingRange,labelRange,graphics);
     [ACC, ERR, SC] = BciSiftNBNNClassifier(F,DE,channel,testRange,labelRange,0,0);
-    Performance(channel, 1)= ACC;
+    Performance(channel, delta)= SC{1}.TN / (SC{1}.TN+SC{1}.FN);
     Pij(channel,1,1) = ERR;
     Selectivity(channel,1,1) = SC{1}.TP/(SC{1}.TP+SC{1}.FP);
     ErrorPerChannel(channel)=ERR;
@@ -117,5 +120,14 @@ if (graphics)
     set(hy,'fontSize',20);
 end
 
+figure;
+subplot(2,1,1);
+epoch=find(labelRange==2);
+epoch=epoch(1);
+DisplayDescriptorImageFull(F,epoch,2,1,-1);
 
+subplot(2,1,2);
+epoch=find(labelRange==2);
+epoch=epoch(2);
+DisplayDescriptorImageFull(F,epoch,2,1,-1);
 
