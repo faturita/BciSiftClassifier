@@ -13,48 +13,59 @@ if (exist(sprintf('%s',getdescriptorpath()),'dir'))
 end
 
 
-load(sprintf('%s/%s',getdatasetpath(),'/008-2014/A03.mat'));
-
+load(sprintf('%s/%s',getdatasetpath(),'/BCI.Competition.II.Dataset.2b/data/AAS010R01.mat'));
 
 % NN.NNNNN
 % data.X(sample, channel)
 % data.y(sample)  --> 0: no, 1:nohit, 2:hit
 % data.y_stim(sample) --> 1-12, 1-6 cols, 7-12 rows
 
+TrialStart=[];
+whichtrial=0;
+for i=1:size(trialnr,1)
+    if (whichtrial ~= trialnr(i))
+        whichtrial = trialnr(i);
+        TrialStart=[TrialStart; i];
+    end
+end
+
 % 3 is PZ
 
 % Parameters ==========================
-epochRange = 1:4200;
-channelRange=1:8;
-labelRange = zeros(1,4200);
+epochRange = 1:size(TrialStart,1);
+channelRange=1:1;
+labelRange = zeros(1,size(TrialStart,1));
 imagescale=1;    % Para agarrar dos decimales NN.NNNN
 siftscale=6;  % 2 mvoltios y medio.
 siftdescriptordensity=1;
-Fs=256;
+Fs=240;
 length=1;
 % =====================================
 
-epoch=0;
 
-for trial=1:2     % subject
-    for flash=0:119
-        
-        epoch=epoch+1;
-    
-        label=data.y(data.trial(trial)+64*flash);
-        labelRange(epoch) = label;
-    
-        output = data.X( (data.trial(trial)+64*flash):(data.trial(trial)+64*flash)+Fs*length-1,:);
-    
-        [n,m]=size(output);
-        output=output - ones(n,1)*mean(output,1);
-    
-        for channel=channelRange
-            image=eegimagescaled(epoch,label,output,channel,imagescale,1);
-        end
+
+
+epoch=0;
+labelRange = zeros(1,size(TrialStart,1));
+
+for trial=1:size(TrialStart,1)
+    epoch=epoch+1;
+
+    label=StimulusType(TrialStart(trial))+1;
+    labelRange(epoch) = label;
+
+    output = signal(TrialStart(trial):TrialStart(trial)+Fs*length-1,:)/100;
+
+    [n,m]=size(output);
+    output=output - ones(n,1)*mean(output,1);
+
+    for channel=channelRange
+        image=eegimagescaled(epoch,label,output,channel,imagescale,1);
     end
 
 end
+
+
 
 KS = 64:64+32-1;
 KS = 64+32;

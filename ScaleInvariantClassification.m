@@ -17,6 +17,7 @@
 %
 %run('C:/Users/rramele/workspace/vlfeat/toolbox/vl_setup')
 %addpath('/Users/rramele/work/BciHotaru/phasereset')
+%run('C:/vlfeat/toolbox/vl_setup.m')
 
 
 clear mex;clear all;close all;clear;clc;
