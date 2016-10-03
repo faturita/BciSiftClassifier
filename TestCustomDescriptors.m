@@ -1,15 +1,8 @@
 % run('/Users/rramele/work/vlfeat-0.9.20/toolbox/vl_setup')
 close all;clearvars;clc;
 
-% Clean EEG image directory
-if (exist(sprintf('%s',getimagepath()),'dir'))
-    delete(sprintf('%s%s*.*',getimagepath(),filesep));
-end
-
-% Clean Descriptor Directory
-if (exist(sprintf('%s',getdescriptorpath()),'dir'))
-    delete(sprintf('%s%s*.dat',getdescriptorpath(),filesep));
-end
+% Clean all the directories where the images are located.
+cleanimagedirectory();
 
 % Parameters ==============
 epochRange = 1:30;
