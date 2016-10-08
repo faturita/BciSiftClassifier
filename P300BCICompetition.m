@@ -29,21 +29,18 @@ for i=1:size(trialnr,1)
     end
 end
 
-% 3 is PZ
+% 11 is CZ
 
 % Parameters ==========================
 epochRange = 1:size(TrialStart,1);
-channelRange=1:1;
+channelRange=1:20;
 labelRange = zeros(1,size(TrialStart,1));
 imagescale=1;    % Para agarrar dos decimales NN.NNNN
-siftscale=6;  % 2 mvoltios y medio.
+siftscale=4;  % 2 mvoltios y medio.
 siftdescriptordensity=1;
 Fs=240;
 length=1;
 % =====================================
-
-
-
 
 epoch=0;
 labelRange = zeros(1,size(TrialStart,1));
@@ -55,7 +52,7 @@ for trial=1:size(TrialStart,1)
     labelRange(epoch) = label;
 
     output = signal(TrialStart(trial):TrialStart(trial)+Fs*length-1,:)/100;
-
+    
     [n,m]=size(output);
     output=output - ones(n,1)*mean(output,1);
 
@@ -64,7 +61,6 @@ for trial=1:size(TrialStart,1)
     end
 
 end
-
 
 
 KS = 64:64+32-1;
@@ -78,9 +74,8 @@ F = LoadDescriptors(labelRange,epochRange,channelRange);
 % Recordar que testRange tiene que ser de largo igual cantidad de ambas
 % clases para que ACC no de mal.
 
-
-trainingRange=1:1800;
-testRange=1801:4200;
+trainingRange=1:500;
+testRange=501:540;
 %trainingRange=1:120;
 %testRange=121:240;
 % Parameters ==============================
@@ -106,3 +101,38 @@ for channel=channelRange
     Selectivity(channel,1,1) = SC{1}.TP/(SC{1}.TP+SC{1}.FP);
     ErrorPerChannel(channel)=ERR;
 end
+
+fdsfs
+
+
+for trial=1:size(TrialStart,1)
+  output = signal(TrialStart(trial):TrialStart(trial)+Fs*length-1,:)/100;
+  hold on;
+  if (labelRange(trial) == 1)
+    plot(output(:,10),'r');
+  else
+    plot(output(:,10),'b');
+  end
+  hold off;
+end
+
+%%
+routput = zeros(240,10);
+boutput = zeros(240,10);
+
+for trial=1:size(TrialStart,1)
+  output = signal(TrialStart(trial):TrialStart(trial)+Fs*length-1,:)/100;
+  if (labelRange(trial) == 1)
+    routput(:,trial) = output(:,10);
+  else
+    boutput(:,trial) = output(:,10);
+  end
+end
+hold on
+rmean = mean(routput,2);
+bmean = mean(boutput,2);
+plot(rmean,'r');
+plot(bmean,'b');
+hold off
+
+
