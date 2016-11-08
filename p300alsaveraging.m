@@ -29,15 +29,11 @@ length=1;
 
 epoch=0;
 
-
-
 for trial=1:35
     routput = [];
     boutput = [];
-    for flash=0:119
-        
-
-    
+    for flash=0:11
+            
         % 64 is the length of 32 stimulus + 32 rest.
         label=data.y(data.trial(trial)+64*flash);
 
@@ -46,15 +42,17 @@ for trial=1:35
     
         %plot(output(:,2));
         
-        for channel=channelRange
-            output(:,channel) = alphaeegremover(Fs,channel,output);
-        end
+        %for channel=channelRange
+        %    output(:,channel) = alphaeegremover(Fs,channel,output);
+        %end
         
         %figure;plot(output(:,2));
 
         [n,m]=size(output);
         output=output - ones(n,1)*mean(output,1);
         
+        % We are only adding values to the list (zeros are not counted in
+        % the averaging)
         if (label==1)
             routput = [routput; output];
         else
@@ -62,8 +60,8 @@ for trial=1:35
         end
         
     end
-    routput=reshape(routput,[256 100 8]);
-    boutput=reshape(boutput,[256 20  8]);
+    routput=reshape(routput,[256 10 8]);
+    boutput=reshape(boutput,[256 2  8]);
     %hold on
     for channel=channelRange
         rmean(:,channel) = mean(routput(:,:,channel),2);
@@ -91,6 +89,7 @@ end
 
 delta=1;
 epochRange=1:epoch;
+labelRange=labelRange(1:epoch);
 
 % Restrict where to put the descriptors but based on the specified density
 KS = 64:64+32-1;
@@ -105,8 +104,8 @@ F = LoadDescriptors(labelRange,epochRange,channelRange);
 % clases para que ACC no de mal.
 
 
-trainingRange=1:5;
-testRange=6:35;
+trainingRange=1:25;
+testRange=26:35;
 % Parameters ==============================
 graphics=0; comps=0;
 prompt = 'Experiment? ';
@@ -124,12 +123,33 @@ for channel=channelRange
     DE = BciSiftNBNNFeatureExtractor(F,expcode,channel,trainingRange,labelRange,graphics);
     [ACC, ERR, SC] = BciSiftNBNNClassifier(F,DE,channel,testRange,labelRange,0,0);
     P = SC{1}.TN / (SC{1}.TN+SC{1}.FN);
-    Performance(channel,delta) = P;
+    Performance(channel,delta) = ACC;
     Pij(channel,1,1) = ERR;
     Selectivity(channel,1,1) = SC{1}.TP/(SC{1}.TP+SC{1}.FP);
     ErrorPerChannel(channel)=ERR;
-    
 end
+
+ACCij=1-Pij/size(testRange,2);
+
+AccuracyPerChannel = 1-ErrorPerChannel;
+graphics = 1;
+if (graphics)
+    figure
+    plot(ACCij,'LineWidth',2);
+    %title(sprintf('10-fold Cross Validation NBNN'));
+    hx=xlabel('Channel');
+    hy=ylabel('Accuracy');
+    axis([1 8 0 1.0]);
+    figurehandle=gcf;
+    set(findall(figurehandle,'type','text'),'fontSize',14); %'fontWeight','bold');
+    set(gca,'XTick', [1 3 5 8]);
+    set(gca,'XTickLabel',{'Fz' ,     'Pz' ,      'P3',    'PO7'  });
+    set(gca,'YTick', [0 0.8 0.9]);
+    set(0, 'DefaultAxesFontSize',24);
+    set(hx,'fontSize',20);
+    set(hy,'fontSize',20);
+end
+
 
 hghkjjkh
 % Data Visualization
