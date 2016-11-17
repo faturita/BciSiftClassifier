@@ -1,3 +1,5 @@
+% Script: P300SingleTrialClassification.m
+
 % Process P300 as is traditionally done, by averaging.
 
 %run('/Users/rramele/work/vlfeat/toolbox/vl_setup')
@@ -27,7 +29,7 @@ siftscale=3;  % 2 mvoltios y medio.
 siftdescriptordensity=1;
 Fs=256;
 length=1;
-expcode=1006;
+expcode=1010;
 % =====================================
 
 epoch=0;
@@ -50,7 +52,7 @@ for trial=1:35
         label=labels((flash+1));
         output = data.X( (data.trial(trial)+64*flash):(data.trial(trial)+64*flash)+Fs*length-1,:);
 
-        output = output*10;
+        %output = output*10;
         %plot(output(:,2));
         
         %for channel=channelRange
