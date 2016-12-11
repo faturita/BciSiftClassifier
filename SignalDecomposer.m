@@ -30,7 +30,7 @@ load(sprintf('/Users/rramele/GoogleDrive/BCI.Dataset/008-2014/A%02d.mat',subject
 epochRange = 1:4200;
 channelRange=1:8;
 labelRange = zeros(1,4200);
-imagescale=1;    % Para agarrar dos decimales NN.NNNN
+imagescale=2;    % Para agarrar dos decimales NN.NNNN
 siftscale=3;  % 2 mvoltios y medio.
 siftdescriptordensity=1;
 Fs=256;
@@ -39,7 +39,7 @@ expcode=1004;
 % =====================================
 
 
-downsize=4;
+downsize=8;
 Fs=256/downsize;
 
 %drawfft(data.X(:,2)',true,256);
@@ -53,7 +53,7 @@ data.X = bandpasseeg(data.X, channelRange,Fs);
 
 
 
-
+epoch=0;
 
 for trial=1:35
     routput=[];
@@ -104,7 +104,8 @@ for trial=1:35
             boutput = [boutput; output];
             bcounter=bcounter+1;
         end
-    
+              
+
     end
 
     routput=reshape(routput,[Fs size(routput,1)/Fs 8]);
@@ -133,9 +134,24 @@ for trial=1:35
 %     hold off
     
     subjectaverages{subject}.rmean = rmean;
-    subjectaverages{subject}.bmean = bmean;    
+    subjectaverages{subject}.bmean = bmean;  
+    
+    epoch=epoch+1;    
+    label = 1;
+    labelRange(epoch) = label;
+    for channel=channelRange
+        image=eegimagescaled(epoch,label,bmean,channel,imagescale,1);
+    end
+
+    epoch=epoch+1;
+    label = 2;
+    labelRange(epoch) = label;
+    for channel=channelRange
+        image=eegimagescaled(epoch,label,rmean,channel,imagescale,1);
+    end  
     
 end
+P300SingleTrialClassification
 end
 
 for subject=1:8
@@ -156,6 +172,7 @@ for subject=1:8
     plot(rmean(:,2),'r');
     plot(bmean(:,2),'b');
     axis([0 Fs -5 5]);
+    set(gca,'XTick', [Fs/4 Fs/2 Fs]);
+    set(gca,'XTickLabel',{'0.25','.5','1s'});
     hold off
 end
-
