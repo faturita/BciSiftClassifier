@@ -151,6 +151,8 @@ for trial=1:35
     end  
     
 end
+trainingRange=1:30;
+testRange=31:70;
 P300SingleTrialClassification
 end
 
