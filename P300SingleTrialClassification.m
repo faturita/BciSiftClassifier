@@ -81,6 +81,7 @@ if (graphics)
     print(fig,sprintf('%d-p300alsaveragingsubject%d.png',expcode,subject),'-dpng')
 end
 
+subjectACCij(subject) = max(ACCij);
 
 % Data Visualization
 % figure;
