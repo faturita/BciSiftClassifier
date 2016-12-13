@@ -4,7 +4,7 @@
 % https://www.mathworks.com/help/signal/ref/sgolayfilt.html
 % https://www.mathworks.com/help/signal/ref/butter.html
 
-%run('/Users/rramele/work/vlfeat/toolbox/vl_setup')
+% run('/Users/rramele/work/vlfeat/toolbox/vl_setup')
 % P300 for ALS patients.
 
 subjectaverages= cell(0);
@@ -31,11 +31,11 @@ epochRange = 1:4200;
 channelRange=1:8;
 labelRange = zeros(1,4200);
 imagescale=2;    % Para agarrar dos decimales NN.NNNN
-siftscale=3;  % 2 mvoltios y medio.
+siftscale=3;  % Determines lamda length [ms] and signal amp [microV]
 siftdescriptordensity=1;
 Fs=256;
 length=1;
-expcode=1004;
+expcode=2001;
 % =====================================
 
 
@@ -48,10 +48,7 @@ data.X = notchsignal(data.X, channelRange);
 data.X=downsample(data.X,downsize);
 %drawfft(data.X(:,2)',true,Fs);
 data.X = bandpasseeg(data.X, channelRange,Fs);         
-
 %drawfft(data.X(:,2)',true,Fs);
-
-
 
 epoch=0;
 
