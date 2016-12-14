@@ -34,8 +34,8 @@ imagescale=2;    % Para agarrar dos decimales NN.NNNN
 siftscale=3;  % Determines lamda length [ms] and signal amp [microV]
 siftdescriptordensity=1;
 Fs=256;
-length=1;
-expcode=2001;
+windowsize=1;
+expcode=2100;
 % =====================================
 
 
@@ -46,9 +46,15 @@ Fs=256/downsize;
 data.X = notchsignal(data.X, channelRange);
 %drawfft(data.X(:,2)',true,256);
 data.X=downsample(data.X,downsize);
+
+%for channel=channelRange
+%    data.X2(:,channel) = decimate(data.X(:,channel),downsize)';
+%end
+%data.X = data.X2;
+
 %drawfft(data.X(:,2)',true,Fs);
 data.X = bandpasseeg(data.X, channelRange,Fs);         
-%drawfft(data.X(:,2)',true,Fs);
+%drawfft(data.X(:,2)',true,Fs);     
 
 epoch=0;
 
@@ -67,30 +73,30 @@ for trial=1:35
     for flash=0:119
         label=labels(flash+1);
         if (mod(flash,12)==0)
-            iteration = extract(data.X, (floor(data.trial(trial)/downsize)+64/downsize*flash),64/downsize*12);
+            iteration = extract(data.X, (ceil(data.trial(trial)/downsize)+64/downsize*flash),64/downsize*12);
             bcounter=0;
             rcounter=0;
-            artifact=isartifact(iteration);
-            
+            artifact=isartifact(iteration);        
         end
-        
+
         if (artifact)
             subjectartifacts = subjectartifacts+1;
             continue;
         end
         
         
-        output = extract(data.X, (floor(data.trial(trial)/downsize)+(64/downsize)*flash),Fs*length);
+        output = extract(data.X, (ceil(data.trial(trial)/downsize)+(64/downsize)*flash),Fs*windowsize);
         % We are only adding values to the list (zeros are not counted in
         % the averaging)
         
         %output2 = data.X( (data.trial(trial)+64*flash):(data.trial(trial)+64*flash)+Fs*length-1,:);
         
+        output = baselineremover(data.X,(ceil(data.trial(trial)/downsize)+(64/downsize)*flash),Fs*windowsize,channelRange,downsize);
+       
+        %[n,m]=size(output);
+        %output=output - ones(n,1)*mean(output,1);
         
-        [n,m]=size(output);
-        output=output - ones(n,1)*mean(output,1);
-        
-        output = bandpasseeg(output, channelRange,Fs);
+        %output = bandpasseeg(output, channelRange,Fs);
         
         
         if ((label==2) && (rcounter<2))
@@ -104,6 +110,8 @@ for trial=1:35
               
 
     end
+    
+    assert( bcounter == rcounter, 'Averages are calculated from different sizes');
 
     routput=reshape(routput,[Fs size(routput,1)/Fs 8]);
     boutput=reshape(boutput,[Fs size(boutput,1)/Fs 8]);
@@ -157,11 +165,11 @@ for subject=1:8
     rmean = subjectaverages{subject}.rmean;
     bmean = subjectaverages{subject}.bmean;
     
-    [n,m]=size(rmean);
-    rmean=rmean - ones(n,1)*mean(rmean,1);
+    %[n,m]=size(rmean);
+    %rmean=rmean - ones(n,1)*mean(rmean,1);
             
-    [n,m]=size(bmean);
-    bmean=bmean - ones(n,1)*mean(bmean,1);
+    %[n,m]=size(bmean);
+    %bmean=bmean - ones(n,1)*mean(bmean,1);
     
     fig = figure(3);
 
@@ -175,3 +183,9 @@ for subject=1:8
     set(gca,'XTickLabel',{'0.25','.5','1s'});
     hold off
 end
+
+totals = [];
+for subject=1:8
+    totals = [totals ;[mean(subjectACCij(subject,:))  max(subjectACCij(subject,:))]];
+end
+totals

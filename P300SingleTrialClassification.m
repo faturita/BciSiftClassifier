@@ -28,6 +28,7 @@ KS = unique(floor(KS/downsize));
 
 %KS = 8*(imagescale):8*(imagescale)+3*(imagescale)*2-1;
 KS=25:39;
+KS=100*imagescale/downsize:156*imagescale/downsize;
 SaveDescriptors(labelRange,epochRange,channelRange,10,siftscale, siftdescriptordensity,1,KS);
 F = LoadDescriptors(labelRange,epochRange,channelRange);
 
@@ -81,7 +82,7 @@ if (graphics)
     print(fig,sprintf('%d-p300alsaveragingsubject%d.png',expcode,subject),'-dpng')
 end
 
-subjectACCij(subject) = max(ACCij);
+subjectACCij(subject,:) = ACCij(:);
 
 % Data Visualization
 % figure;
