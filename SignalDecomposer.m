@@ -5,10 +5,14 @@
 % https://www.mathworks.com/help/signal/ref/butter.html
 
 % run('/Users/rramele/work/vlfeat/toolbox/vl_setup')
+% run('C:/vlfeat/toolbox/vl_setup')
 % P300 for ALS patients.
+
+clear all;
 
 subjectaverages= cell(0);
 subjectartifacts = 0;
+for subjectsingletriality=12*[10:-3:1]-1
 for subject = 1:8
 clear mex;clearvars  -except subject*;close all;clc;
 
@@ -17,7 +21,8 @@ cleanimagedirectory();
 
 
 %subject = 2;
-load(sprintf('/Users/rramele/GoogleDrive/BCI.Dataset/008-2014/A%02d.mat',subject));
+%load(sprintf('/Users/rramele/GoogleDrive/BCI.Dataset/008-2014/A%02d.mat',subject));
+load(sprintf('C:/Users/User/Google Drive/BCI.Dataset/008-2014/A%02d.mat',subject));
 
 % NN.NNNNN
 % data.X(sample, channel)
@@ -70,7 +75,7 @@ for trial=1:35
     artifact=false;
     bcounter=0;
     rcounter=0;
-    for flash=0:119
+    for flash=0:subjectsingletriality
         label=labels(flash+1);
         if (mod(flash,12)==0)
             iteration = extract(data.X, (ceil(data.trial(trial)/downsize)+64/downsize*flash),64/downsize*12);
@@ -81,7 +86,7 @@ for trial=1:35
 
         if (artifact)
             subjectartifacts = subjectartifacts+1;
-            continue;
+            %continue;
         end
         
         
@@ -160,7 +165,7 @@ trainingRange=1:30;
 testRange=31:70;
 P300SingleTrialClassification
 end
-
+end
 for subject=1:8
     rmean = subjectaverages{subject}.rmean;
     bmean = subjectaverages{subject}.bmean;
@@ -176,11 +181,17 @@ for subject=1:8
     subplot(4,2,subject);
     
     hold on;
-    plot(rmean(:,2),'r');
-    plot(bmean(:,2),'b');
+    Xi = 0:0.1:size(rmean,1);
+    Yrmean = pchip(1:size(rmean,1),rmean(:,2),Xi);
+    Ybmean = pchip(1:size(rmean,1),bmean(:,2),Xi);
+    plot(Xi,Yrmean,'r');
+    plot(Xi,Ybmean,'b');
+    %plot(rmean(:,2),'r');
+    %plot(bmean(:,2),'b');
     axis([0 Fs -5 5]);
     set(gca,'XTick', [Fs/4 Fs/2 Fs]);
     set(gca,'XTickLabel',{'0.25','.5','1s'});
+    set(gcf, 'renderer', 'opengl')
     hold off
 end
 
@@ -189,3 +200,28 @@ for subject=1:8
     totals = [totals ;[mean(subjectACCij(subject,:))  max(subjectACCij(subject,:))]];
 end
 totals
+
+
+    flashes = 12*[10:-3:1]-1;
+    fig = figure
+    hold on;
+    plot(flashes,subjectACCij(flashes,1,1),'y','LineWidth',2)
+    plot(flashes,subjectACCij(flashes,1,2),'m','LineWidth',2)
+    plot(flashes,subjectACCij(flashes,1,3),'c','LineWidth',2)
+    plot(flashes,subjectACCij(flashes,1,4),'r','LineWidth',2)
+    plot(flashes,subjectACCij(flashes,1,5),'g','LineWidth',2)
+    plot(flashes,subjectACCij(flashes,1,6),'b','LineWidth',2)
+    plot(flashes,subjectACCij(flashes,1,7),'w','LineWidth',2)
+    plot(flashes,subjectACCij(flashes,1,8),'k','LineWidth',2)    
+    %title(sprintf('10-fold Cross Validation NBNN'));
+    hx=xlabel('Repetitions');
+    hy=ylabel('Accuracy');
+    axis([1 120 0 1.0]);
+    figurehandle=gcf;
+    set(findall(figurehandle,'type','text'),'fontSize',14); %'fontWeight','bold');
+    set(gca,'YTick', [0 0.8 0.9]);
+    set(0, 'DefaultAxesFontSize',24);
+    set(hx,'fontSize',20);
+    set(hy,'fontSize',20);
+    hold off
+

@@ -82,7 +82,7 @@ if (graphics)
     print(fig,sprintf('%d-p300alsaveragingsubject%d.png',expcode,subject),'-dpng')
 end
 
-subjectACCij(subject,:) = ACCij(:);
+subjectACCij(subjectsingletriality,subject,:) = ACCij(:);
 
 % Data Visualization
 % figure;
