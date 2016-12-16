@@ -41,7 +41,7 @@ siftscale=3;  % Determines lamda length [ms] and signal amp [microV]
 siftdescriptordensity=1;
 Fs=256;
 windowsize=1;
-expcode=2100;
+expcode=2200;
 % =====================================
 
 
@@ -51,23 +51,9 @@ Fs=256/downsize;
 %drawfft(data.X(:,2)',true,256);
 data.X = notchsignal(data.X, channelRange);
 %drawfft(data.X(:,2)',true,256);
-
 %data.X=downsample(data.X,downsize);
-
-n = 8; %// averaging size
-
-P = zeros(size(data.X,1)/n,size(channelRange,2));
-for channel=channelRange
-    P(:,channel) = (mean(reshape(data.X(:,channel),n,[])))';
-end
-data.X = P;
-
-
-%for channel=channelRange
-%    data.X2(:,channel) = decimate(data.X(:,channel),downsize)';
-%end
-%data.X = data.X2;
-
+data.X = decimateaveraging(data.X,channelRange,downsize);
+%data.X = decimatesignal(data.X,channelRange,downsize);
 %drawfft(data.X(:,2)',true,Fs);
 data.X = bandpasseeg(data.X, channelRange,Fs);         
 %drawfft(data.X(:,2)',true,Fs);     
@@ -101,7 +87,7 @@ for trial=1:35
         end
         
         
-        output = extract(data.X, (ceil(data.trial(trial)/downsize)+(64/downsize)*flash),Fs*windowsize);
+        %output = extract(data.X, (ceil(data.trial(trial)/downsize)+(64/downsize)*flash),Fs*windowsize);
         % We are only adding values to the list (zeros are not counted in
         % the averaging)
         
@@ -109,8 +95,8 @@ for trial=1:35
         
         output = baselineremover(data.X,(ceil(data.trial(trial)/downsize)+(64/downsize)*flash),Fs*windowsize,channelRange,downsize);
        
-        %[n,m]=size(output);
-        %output=output - ones(n,1)*mean(output,1);
+        [n,m]=size(output);
+        output=output - ones(n,1)*mean(output,1);
         
         %output = bandpasseeg(output, channelRange,Fs);
         
@@ -127,7 +113,7 @@ for trial=1:35
 
     end
     
-    %assert( bcounter == rcounter, 'Averages are calculated from different sizes');
+    assert( bcounter == rcounter, 'Averages are calculated from different sizes');
 
     routput=reshape(routput,[Fs size(routput,1)/Fs 8]);
     boutput=reshape(boutput,[Fs size(boutput,1)/Fs 8]);
