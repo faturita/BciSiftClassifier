@@ -115,11 +115,11 @@ for trial=1:35
         %output = bandpasseeg(output, channelRange,Fs);
         
         
-        if ((label==2) && (rcounter<20))
+        if ((label==2) && (rcounter<2))
             routput = [routput; output];
             rcounter=rcounter+1;
         end
-        if ((label==1) && (bcounter<20))
+        if ((label==1) && (bcounter<2))
             boutput = [boutput; output];
             bcounter=bcounter+1;
         end
