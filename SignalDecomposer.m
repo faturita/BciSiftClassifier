@@ -12,7 +12,8 @@ clear all;
 
 subjectaverages= cell(0);
 subjectartifacts = 0;
-for subjectsingletriality=12*[10:-3:1]-1
+subjectsingletriality=119;
+%for subjectsingletriality=12*[10:-3:1]-1
 for subject = 1:8
 clear mex;clearvars  -except subject*;close all;clc;
 
@@ -50,7 +51,17 @@ Fs=256/downsize;
 %drawfft(data.X(:,2)',true,256);
 data.X = notchsignal(data.X, channelRange);
 %drawfft(data.X(:,2)',true,256);
-data.X=downsample(data.X,downsize);
+
+%data.X=downsample(data.X,downsize);
+
+n = 8; %// averaging size
+
+P = zeros(size(data.X,1)/n,size(channelRange,2));
+for channel=channelRange
+    P(:,channel) = (mean(reshape(data.X(:,channel),n,[])))';
+end
+data.X = P;
+
 
 %for channel=channelRange
 %    data.X2(:,channel) = decimate(data.X(:,channel),downsize)';
@@ -86,7 +97,7 @@ for trial=1:35
 
         if (artifact)
             subjectartifacts = subjectartifacts+1;
-            %continue;
+            continue;
         end
         
         
@@ -104,11 +115,11 @@ for trial=1:35
         %output = bandpasseeg(output, channelRange,Fs);
         
         
-        if ((label==2) && (rcounter<2))
+        if ((label==2) && (rcounter<20))
             routput = [routput; output];
             rcounter=rcounter+1;
         end
-        if ((label==1) && (bcounter<2))
+        if ((label==1) && (bcounter<20))
             boutput = [boutput; output];
             bcounter=bcounter+1;
         end
@@ -116,7 +127,7 @@ for trial=1:35
 
     end
     
-    assert( bcounter == rcounter, 'Averages are calculated from different sizes');
+    %assert( bcounter == rcounter, 'Averages are calculated from different sizes');
 
     routput=reshape(routput,[Fs size(routput,1)/Fs 8]);
     boutput=reshape(boutput,[Fs size(boutput,1)/Fs 8]);
@@ -165,7 +176,7 @@ trainingRange=1:30;
 testRange=31:70;
 P300SingleTrialClassification
 end
-end
+%end
 for subject=1:8
     rmean = subjectaverages{subject}.rmean;
     bmean = subjectaverages{subject}.bmean;
@@ -197,11 +208,11 @@ end
 
 totals = [];
 for subject=1:8
-    totals = [totals ;[mean(subjectACCij(subject,:))  max(subjectACCij(subject,:))]];
+    totals = [totals ;[mean(subjectACCij(subjectsingletriality,subject,:))  max(subjectACCij(subjectsingletriality,subject,:))]];
 end
 totals
 
-
+if (graphics)
     flashes = 12*[10:-3:1]-1;
     fig = figure
     hold on;
@@ -224,4 +235,4 @@ totals
     set(hx,'fontSize',20);
     set(hy,'fontSize',20);
     hold off
-
+end
