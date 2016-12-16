@@ -5,6 +5,7 @@
 % https://www.mathworks.com/help/signal/ref/butter.html
 
 % run('/Users/rramele/work/vlfeat/toolbox/vl_setup')
+% run('D:\MATLAB\vlfeat-0.9.18\toolbox\vl_setup');
 % P300 for ALS patients.
 
 subjectaverages= cell(0);
@@ -17,7 +18,10 @@ cleanimagedirectory();
 
 
 %subject = 2;
-load(sprintf('/Users/rramele/GoogleDrive/BCI.Dataset/008-2014/A%02d.mat',subject));
+%load(sprintf('/Users/rramele/GoogleDrive/BCI.Dataset/008-2014/A%02d.mat',subject));
+load(sprintf('D:/GoogleDrive/BCI.Dataset/008-2014/A%02d.mat',subject));
+
+
 
 % NN.NNNNN
 % data.X(sample, channel)
@@ -81,7 +85,7 @@ for trial=1:35
 
         if (artifact)
             subjectartifacts = subjectartifacts+1;
-            continue;
+            %continue;
         end
         
         
@@ -92,11 +96,11 @@ for trial=1:35
         %output2 = data.X( (data.trial(trial)+64*flash):(data.trial(trial)+64*flash)+Fs*length-1,:);
         
         output = baselineremover(data.X,(ceil(data.trial(trial)/downsize)+(64/downsize)*flash),Fs*windowsize,channelRange,downsize);
-       
-        %[n,m]=size(output);
-        %output=output - ones(n,1)*mean(output,1);
+          
+        output = FakeNoisyEeg(15,channelRange,Fs);
         
-        %output = bandpasseeg(output, channelRange,Fs);
+        [n,m]=size(output);
+        output=output - ones(n,1)*mean(output,1);
         
         
         if ((label==2) && (rcounter<2))
