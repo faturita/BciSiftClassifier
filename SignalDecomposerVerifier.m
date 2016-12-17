@@ -15,7 +15,7 @@ subjectaverages= cell(0);
 subjectartifacts = 0;
 subjectsingletriality=119;
 %for subjectsingletriality=12*[10:-3:1]-1
-for subject = 1:8
+for subject = 10:10
 clear mex;clearvars  -except subject*;close all;clc;
 
 % Clean all the directories where the images are located.
@@ -23,9 +23,7 @@ cleanimagedirectory();
 
 
 %subject = 2;
-%load(sprintf('/Users/rramele/GoogleDrive/BCI.Dataset/008-2014/A%02d.mat',subject));
-load(sprintf('D:/GoogleDrive/BCI.Dataset/008-2014/A%02d.mat',subject));
-%load(sprintf('C:/Users/User/Google Drive/BCI.Dataset/008-2014/A%02d.mat',subject));
+load('D:\GoogleDrive\BCI.Dataset\003-2015\s10.mat')
 
 
 % NN.NNNNN
@@ -36,20 +34,19 @@ load(sprintf('D:/GoogleDrive/BCI.Dataset/008-2014/A%02d.mat',subject));
 %     'Fz'    'Cz'    'Pz'    'Oz'    'P3'    'P4'    'PO7'    'PO8'
 
 % Parameters ==========================
-epochRange = 1:120*7*5;
 channelRange=1:8;
 labelRange = zeros(1,4200);
 imagescale=2;    % Para agarrar dos decimales NN.NNNN
 siftscale=3;  % Determines lamda length [ms] and signal amp [microV]
 siftdescriptordensity=1;
-Fs=256;
+Fs=64;
 windowsize=1;
 expcode=2100;
 % =====================================
 
 
-downsize=8;
-Fs=256/downsize;
+downsize=1;
+Fs=64/downsize;
 
 %drawfft(data.X(:,2)',true,256);
 data.X = notchsignal(data.X, channelRange);
@@ -90,7 +87,7 @@ for trial=1:35
 
         if (artifact)
             subjectartifacts = subjectartifacts+1;
-            continue;
+            %continue;
         end
         
         
@@ -163,13 +160,11 @@ for trial=1:35
     end  
     
 end
-trainingRange=1:50;
-testRange=51:70;
+trainingRange=1:30;
+testRange=31:70;
 P300SingleTrialClassification
 end
-%end
-
-
+end
 for subject=1:8
     rmean = subjectaverages{subject}.rmean;
     bmean = subjectaverages{subject}.bmean;
