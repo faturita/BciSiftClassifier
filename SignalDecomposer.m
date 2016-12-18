@@ -198,8 +198,8 @@ for subject=1:8
     Xi = 0:0.1:size(rmean,1);
     Yrmean = pchip(1:size(rmean,1),rmean(:,2),Xi);
     Ybmean = pchip(1:size(rmean,1),bmean(:,2),Xi);
-    plot(Xi,Yrmean,'r');
-    plot(Xi,Ybmean,'b');
+    plot(Xi,Yrmean,'r','LineWidth',3);
+    plot(Xi,Ybmean,'b','LineWidth',3);
     %plot(rmean(:,2),'r');
     %plot(bmean(:,2),'b');
     axis([0 Fs -5 5]);
@@ -214,11 +214,24 @@ for subject=1:8
     hold off
 end
 
+
+informedinpaper =   [  0.845  
+    0.863    
+    0.872    
+    0.859    
+    0.862    
+    0.886    
+    0.886    
+    0.923 ];
+
 totals = [];
 for subject=1:8
-    totals = [totals ;[mean(subjectACCij(subjectnumberofsamples,subject,:))  max(subjectACCij(subjectnumberofsamples,subject,:))]];
+    [C,I] = max(subjectACCij(subjectnumberofsamples,subject,:));
+    S = subjectACCijsigma(subjectnumberofsamples,subject,I);
+    d = subjectACCij(subjectnumberofsamples,subject,2);
+    totals = [totals ;informedinpaper(subject) [mean(subjectACCij(subjectnumberofsamples,subject,:)) d  I C  S]];
+    fprintf('%f     & %f & %f & %d & %f $\\pm$ %f\n', totals(subject,:));
 end
-totals
 
 if (graphics)
     processedflashes = 12*[10:-1:1]-1;
@@ -244,3 +257,26 @@ if (graphics)
     set(hy,'fontSize',20);
     hold off
 end
+
+
+
+%% Generate the cross validated accuracy for Cz, Pz and for the best performing channel.
+if (graphics)
+    AccuracyPerChannel = subjectACCij(subjectnumberofsamples,:,2);
+    SigmaPerChannel = subjectACCijsigma(subjectnumberofsamples,:,2);
+    errorbar(AccuracyPerChannel, SigmaPerChannel,'LineWidth',2);
+    %title(sprintf('10-fold Cross Validation NBNN'));
+    hx=xlabel('Subject');
+    hy=ylabel('Accuracy');
+    axis([1 8 0 1.0]);
+    figurehandle=gcf;
+    set(findall(figurehandle,'type','text'),'fontSize',14); %'fontWeight','bold');
+    set(gca,'XTick', [1 2 6 8]);
+    set(gca,'XTickLabel',{'S1', 'S2','S6', 'S8'});
+    set(gca,'YTick', [0 0.7]);
+    set(0, 'DefaultAxesFontSize',24);
+    set(hx,'fontSize',20);
+    set(hy,'fontSize',20);
+end
+
+

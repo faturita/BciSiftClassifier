@@ -77,8 +77,12 @@ ACCijsigma=SigmaPerChannel;
 if (graphics)
     figure
     bar(AccuracyPerChannel(channelRange));
-    title(sprintf('Exp.%d:k(%d)-fold Cross Validation NBNN: %d, %1.2f',expcode,KFolds,siftdescriptordensity,siftscale));
+    %title(sprintf('Exp.%d:k(%d)-fold Cross Validation NBNN: %d, %1.2f',expcode,KFolds,siftdescriptordensity,siftscale));
     xlabel('Channel')
     ylabel('Accuracy')
     axis([0 size(channelRange,2)+1 0 1.3]);
 end
+
+
+subjectACCij(subjectnumberofsamples,subject,:) = ACCij(:);
+subjectACCijsigma(subjectnumberofsamples,subject,:) = ACCijsigma(:);

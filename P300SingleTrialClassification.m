@@ -43,6 +43,7 @@ for channel=channelRange
 end
 
 ACCij=1-Pij/size(testRange,2);
+ACCijsigma=0;
 
 AccuracyPerChannel = 1-ErrorPerChannel;
 graphics = 0;
