@@ -173,8 +173,8 @@ for trial=1:35
 end
 trainingRange=1:30;
 testRange=31:70;
-%P300SingleTrialClassification
-SignalDecomposerCrossValidated
+P300SingleTrialClassification
+%SignalDecomposerCrossValidated
 subjectACCij(subjectnumberofsamples,subject,:) = ACCij(:);
 subjectACCijsigma(subjectnumberofsamples,subject,:) = ACCijsigma(:);
 end
