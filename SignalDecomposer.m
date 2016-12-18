@@ -22,7 +22,6 @@ clear mex;clearvars  -except subject*;close all;clc;
 cleanimagedirectory();
 
 
-%subject = 2;
 %load(sprintf('/Users/rramele/GoogleDrive/BCI.Dataset/008-2014/A%02d.mat',subject));
 load(sprintf('D:/GoogleDrive/BCI.Dataset/008-2014/A%02d.mat',subject));
 %load(sprintf('C:/Users/User/Google Drive/BCI.Dataset/008-2014/A%02d.mat',subject));
@@ -173,7 +172,7 @@ for trial=1:35
 end
 trainingRange=1:30;
 testRange=31:70;
-P300SingleTrialClassification
+SignalDecomposerClassification
 %SignalDecomposerCrossValidated
 subjectACCij(subjectnumberofsamples,subject,:) = ACCij(:);
 subjectACCijsigma(subjectnumberofsamples,subject,:) = ACCijsigma(:);
@@ -232,6 +231,7 @@ for subject=1:8
     totals = [totals ;informedinpaper(subject) [mean(subjectACCij(subjectnumberofsamples,subject,:)) d  I C  S]];
     fprintf('%f     & %f & %f & %d & %f $\\pm$ %f\n', totals(subject,:));
 end
+totals
 
 if (graphics)
     processedflashes = 12*[10:-1:1]-1;

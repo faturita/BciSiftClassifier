@@ -1,4 +1,4 @@
-% Script: P300SingleTrialClassification.m
+% Script: SignalDecomposerClassification.m
 
 %% Classification
 %print(fig,sprintf('%d-p300averagedpersubject%d.png',expcode,subject),'-dpng')
@@ -43,7 +43,8 @@ for channel=channelRange
 end
 
 ACCij=1-Pij/size(testRange,2);
-ACCijsigma=0;
+% I have only one value per classification here.
+ACCijsigma=0*Pij;
 
 AccuracyPerChannel = 1-ErrorPerChannel;
 graphics = 0;
