@@ -1,14 +1,27 @@
+%% Classification
+%print(fig,sprintf('%d-p300averagedpersubject%d.png',expcode,subject),'-dpng')
+%clear('fig');
+delta=1;
+epochRange=1:epoch;
+labelRange=labelRange(1:epoch);
+
+% Restrict where to put the descriptors but based on the specified density
+%assert( 64+min(KS)-siftscale*12/2 >= max(KS), sprintf('%d\n',64+min(KS)-siftscale*12/2))
+
+KS=25:39;
+KS=ceil(100*imagescale/downsize):ceil(156*imagescale/downsize);
+
+SaveDescriptors(labelRange,epochRange,channelRange,10,siftscale, siftdescriptordensity,1,KS);
+F = LoadDescriptors(labelRange,epochRange,channelRange);
+
+
 % Parameters ==============================
-DbScanRadio=210;minPts=2;channel=7;graphics=0; comps=0;
 %trainingRange=epochRange; %[1:10 16:25];
 %testRange=epochRange; %[11:15 26:30];
 %channelRange=1:14;
-graphics=0; comps=0;
-prompt = 'Experiment? ';
-%expcode = input(prompt);
-expcode=132;
+graphics=1; comps=0;
 %==========================================
-ErrorPerChannel = ones(12,1)*0.5;
+ErrorPerChannel = ones(size(channelRange,2),1)*0.5;
 
 
 for channel=channelRange
@@ -33,17 +46,9 @@ for channel=channelRange
             fprintf('Channel %d\n', channel);
             DE = BciSiftNBNNFeatureExtractor(F,expcode,channel,trainingRange,labelRange,graphics);
             [ACC, ERR, SC] = BciSiftNBNNClassifier(F,DE,channel,testRange,labelRange,0,0);
-            Performance(channel, 1)= ACC;
+            P = SC{1}.TN / (SC{1}.TN+SC{1}.FN);
+            Performance(channel, delta)= ACC;
             N(f) = ERR;
-
-            if (graphics)
-                figure
-                plot(Performance(channel,:));
-                title(sprintf('Exp.%d:Channel %10.3f - MinPts %10.3f', expcode, channel, minPts));
-                xlabel('DbscanRadio')
-                ylabel('ACC')
-                axis([0 500 0 1.3]);
-            end
 
             % -hat -----------------------
 
@@ -61,9 +66,13 @@ for channel=channelRange
     SigmaPerChannel(channel)=sigma;
 end
 
-
 AccuracyPerChannel = 1-ErrorPerChannel ;
 SigmaPerChannel=SigmaPerChannel.*(1.96/(sqrt(T)));
+
+% This is now the averaged value of error k-fold cross validated.
+ACCij=AccuracyPerChannel
+ACCijsigma=SigmaPerChannel;
+
 
 if (graphics)
     figure

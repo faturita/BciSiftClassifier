@@ -13,8 +13,8 @@ clear all;
 
 subjectaverages= cell(0);
 subjectartifacts = 0;
-subjectsingletriality=119;
-%for subjectsingletriality=12*[10:-3:1]-1
+subjectnumberofsamples=119;
+%for subjectnumberofsamples=12*[10:-1:1]-1
 for subject = 1:8
 clear mex;clearvars  -except subject*;close all;clc;
 
@@ -44,23 +44,19 @@ siftscale=3;  % Determines lamda length [ms] and signal amp [microV]
 siftdescriptordensity=1;
 Fs=256;
 windowsize=1;
-expcode=2100;
+expcode=2300;
 % =====================================
 
 
 downsize=8;
-Fs=256/downsize;
+Fs=Fs/downsize;
 
 %drawfft(data.X(:,2)',true,256);
 data.X = notchsignal(data.X, channelRange);
 %drawfft(data.X(:,2)',true,256);
-data.X=downsample(data.X,downsize);
-
-%for channel=channelRange
-%    data.X2(:,channel) = decimate(data.X(:,channel),downsize)';
-%end
-%data.X = data.X2;
-
+%data.X=downsample(data.X,downsize);
+%data.X = decimateaveraging(data.X,channelRange,downsize);
+data.X = decimatesignal(data.X,channelRange,downsize);
 %drawfft(data.X(:,2)',true,Fs);
 data.X = bandpasseeg(data.X, channelRange,Fs);         
 %drawfft(data.X(:,2)',true,Fs);     
@@ -79,7 +75,13 @@ for trial=1:35
     artifact=false;
     bcounter=0;
     rcounter=0;
-    for flash=0:subjectsingletriality
+    processedflashes=0;
+    for flash=0:119
+        % Check wether or not are we going to provide that amount of
+        % sample points.
+        if (processedflashes>subjectnumberofsamples)
+            break;
+        end
         label=labels(flash+1);
         if (mod(flash,12)==0)
             iteration = extract(data.X, (ceil(data.trial(trial)/downsize)+64/downsize*flash),64/downsize*12);
@@ -93,14 +95,15 @@ for trial=1:35
             continue;
         end
         
-        
-        output = extract(data.X, (ceil(data.trial(trial)/downsize)+(64/downsize)*flash),Fs*windowsize);
+        processedflashes = processedflashes+1;
+         
+        %output = extract(data.X, (ceil(data.trial(trial)/downsize)+(64/downsize)*flash),Fs*windowsize);
         % We are only adding values to the list (zeros are not counted in
         % the averaging)
         
         %output2 = data.X( (data.trial(trial)+64*flash):(data.trial(trial)+64*flash)+Fs*length-1,:);
         
-        output = baselineremover(data.X,(ceil(data.trial(trial)/downsize)+(64/downsize)*flash),Fs*windowsize,channelRange,downsize);
+        output = baselineremover(data.X,(ceil(data.trial(trial)/downsize)+ceil(64/downsize)*flash),Fs*windowsize,channelRange,downsize);
         
         [n,m]=size(output);
         output=output - ones(n,1)*mean(output,1);
@@ -119,6 +122,11 @@ for trial=1:35
     end
     
     assert( bcounter == rcounter, 'Averages are calculated from different sizes');
+    
+    assert( size(boutput,1) == size(routput,1), 'Averages are calculated from different sizes.')
+    
+    assert( (size(routput,1) >= 2 ), 'There arent enough epoch windows to average.');
+   
 
     routput=reshape(routput,[Fs size(routput,1)/Fs 8]);
     boutput=reshape(boutput,[Fs size(boutput,1)/Fs 8]);
@@ -163,12 +171,14 @@ for trial=1:35
     end  
     
 end
-trainingRange=1:50;
-testRange=51:70;
-P300SingleTrialClassification
+trainingRange=1:30;
+testRange=31:70;
+%P300SingleTrialClassification
+SignalDecomposerCrossValidated
+subjectACCij(subjectnumberofsamples,subject,:) = ACCij(:);
+subjectACCijsigma(subjectnumberofsamples,subject,:) = ACCijsigma(:);
 end
 %end
-
 
 for subject=1:8
     rmean = subjectaverages{subject}.rmean;
@@ -193,31 +203,35 @@ for subject=1:8
     %plot(rmean(:,2),'r');
     %plot(bmean(:,2),'b');
     axis([0 Fs -5 5]);
-    set(gca,'XTick', [Fs/4 Fs/2 Fs]);
-    set(gca,'XTickLabel',{'0.25','.5','1s'});
+    set(gca,'XTick', [Fs/4 Fs/2 Fs*3/4 Fs]);
+    set(gca,'XTickLabel',{'0.25','.5','0.75','1s'});
     set(gcf, 'renderer', 'opengl')
+    %hx=xlabel('Repetitions');
+    %hy=ylabel('Accuracy');
+    set(0, 'DefaultAxesFontSize',18);
+    %set(hx,'fontSize',20);
+    %set(hy,'fontSize',20);
     hold off
 end
 
 totals = [];
 for subject=1:8
-    totals = [totals ;[mean(subjectACCij(subjectsingletriality,subject,:))  max(subjectACCij(subjectsingletriality,subject,:))]];
+    totals = [totals ;[mean(subjectACCij(subjectnumberofsamples,subject,:))  max(subjectACCij(subjectnumberofsamples,subject,:))]];
 end
 totals
 
-
 if (graphics)
-    flashes = 12*[10:-3:1]-1;
+    processedflashes = 12*[10:-1:1]-1;
     fig = figure
     hold on;
-    plot(flashes,subjectACCij(flashes,1,1),'y','LineWidth',2)
-    plot(flashes,subjectACCij(flashes,1,2),'m','LineWidth',2)
-    plot(flashes,subjectACCij(flashes,1,3),'c','LineWidth',2)
-    plot(flashes,subjectACCij(flashes,1,4),'r','LineWidth',2)
-    plot(flashes,subjectACCij(flashes,1,5),'g','LineWidth',2)
-    plot(flashes,subjectACCij(flashes,1,6),'b','LineWidth',2)
-    plot(flashes,subjectACCij(flashes,1,7),'w','LineWidth',2)
-    plot(flashes,subjectACCij(flashes,1,8),'k','LineWidth',2)    
+    plot(processedflashes,subjectACCij(processedflashes,1,1),'y','LineWidth',2)
+    plot(processedflashes,subjectACCij(processedflashes,1,2),'m','LineWidth',2)
+    plot(processedflashes,subjectACCij(processedflashes,1,3),'c','LineWidth',2)
+    plot(processedflashes,subjectACCij(processedflashes,1,4),'r','LineWidth',2)
+    plot(processedflashes,subjectACCij(processedflashes,1,5),'g','LineWidth',2)
+    plot(processedflashes,subjectACCij(processedflashes,1,6),'b','LineWidth',2)
+    plot(processedflashes,subjectACCij(processedflashes,1,7),'w','LineWidth',2)
+    plot(processedflashes,subjectACCij(processedflashes,1,8),'k','LineWidth',2)    
     %title(sprintf('10-fold Cross Validation NBNN'));
     hx=xlabel('Repetitions');
     hy=ylabel('Accuracy');

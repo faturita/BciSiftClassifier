@@ -8,31 +8,13 @@ epochRange=1:epoch;
 labelRange=labelRange(1:epoch);
 
 % Restrict where to put the descriptors but based on the specified density
-KS = 64:64+32-1;
-KS = 46:110;
-KS = 93:146;
-LOCS{1}.KS = 67:113 ;%64+46=110
-LOCS{2}.KS = 93:139 ;%64+93=157
-LOCS{3}.KS = 74:117 ;%64+57=121
-LOCS{4}.KS = 40:85  ;%64+37=101
-LOCS{5}.KS = 138:184;
-LOCS{6}.KS = 79:124 ;
-LOCS{7}.KS = 93:138 ;
-LOCS{8}.KS = 85:130 ;
+%assert( 64+min(KS)-siftscale*12/2 >= max(KS), sprintf('%d\n',64+min(KS)-siftscale*12/2))
 
-KS = LOCS{subject}.KS;
-
-assert( 64+min(KS)-siftscale*12/2 >= max(KS), sprintf('%d\n',64+min(KS)-siftscale*12/2))
-
-KS = unique(floor(KS/downsize));
-
-%KS = 8*(imagescale):8*(imagescale)+3*(imagescale)*2-1;
 KS=25:39;
-KS=100*imagescale/downsize:156*imagescale/downsize;
+KS=ceil(100*imagescale/downsize):ceil(156*imagescale/downsize);
+
 SaveDescriptors(labelRange,epochRange,channelRange,10,siftscale, siftdescriptordensity,1,KS);
 F = LoadDescriptors(labelRange,epochRange,channelRange);
-
-%F = SynthesizeDescriptors(F, labelRange, epochRange, channelRange,3*(imagescale));
 
 % Recordar que testRange tiene que ser de largo igual cantidad de ambas
 % clases para que ACC no de mal.
@@ -63,7 +45,7 @@ end
 ACCij=1-Pij/size(testRange,2);
 
 AccuracyPerChannel = 1-ErrorPerChannel;
-graphics = 1;
+graphics = 0;
 if (graphics)
     fig = figure
     plot(ACCij,'LineWidth',2);
@@ -82,7 +64,7 @@ if (graphics)
     print(fig,sprintf('%d-p300alsaveragingsubject%d.png',expcode,subject),'-dpng')
 end
 
-subjectACCij(subjectsingletriality,subject,:) = ACCij(:);
+
 
 % Data Visualization
 % figure;
