@@ -9,7 +9,7 @@ labelRange=labelRange(1:epoch);
 %assert( 64+min(KS)-siftscale*12/2 >= max(KS), sprintf('%d\n',64+min(KS)-siftscale*12/2))
 
 KS=25:39;
-KS=ceil(100*imagescale/downsize):ceil(156*imagescale/downsize);
+KS=ceil(100*imagescale/downsize):floor(156*imagescale/downsize);
 
 SaveDescriptors(labelRange,epochRange,channelRange,10,siftscale, siftdescriptordensity,1,KS);
 F = LoadDescriptors(labelRange,epochRange,channelRange);
@@ -25,7 +25,7 @@ ErrorPerChannel = ones(size(channelRange,2),1)*0.5;
 
 
 for channel=channelRange
-    T=10;
+    T=100;
     KFolds=3;
     E = zeros(T,1);
 
@@ -34,6 +34,7 @@ for channel=channelRange
         kfolds = fold(KFolds, epochRange);
 
         N = zeros(KFolds,1);
+        EP = zeros(KFolds,1);
 
         for f=1:KFolds
 
@@ -49,12 +50,14 @@ for channel=channelRange
             P = SC{1}.TN / (SC{1}.TN+SC{1}.FN);
             Performance(channel, delta)= ACC;
             N(f) = ERR;
+            EP(f) = ERR/size(testRange,2);
 
             % -hat -----------------------
 
         end
 
-        E(t) = sum(N)/size(epochRange,2);
+        %E(t) = sum(N)/size(epochRange,2);
+        E(t) = mean(EP);
 
     end
 

@@ -34,6 +34,9 @@ load(sprintf('D:/GoogleDrive/BCI.Dataset/008-2014/A%02d.mat',subject));
 
 %     'Fz'    'Cz'    'Pz'    'Oz'    'P3'    'P4'    'PO7'    'PO8'
 
+channels={ 'Fz'  ,  'Cz',    'Pz' ,   'Oz'  ,  'P3'  ,  'P4'   , 'PO7'   , 'PO8'};
+
+
 % Parameters ==========================
 epochRange = 1:120*7*5;
 channelRange=1:8;
@@ -43,7 +46,7 @@ siftscale=3;  % Determines lamda length [ms] and signal amp [microV]
 siftdescriptordensity=1;
 Fs=256;
 windowsize=1;
-expcode=2300;
+expcode=2400;
 % =====================================
 
 
@@ -179,6 +182,7 @@ subjectACCijsigma(subjectnumberofsamples,subject,:) = ACCijsigma(:);
 end
 %end
 
+%%
 for subject=1:8
     rmean = subjectaverages{subject}.rmean;
     bmean = subjectaverages{subject}.bmean;
@@ -197,23 +201,27 @@ for subject=1:8
     Xi = 0:0.1:size(rmean,1);
     Yrmean = pchip(1:size(rmean,1),rmean(:,2),Xi);
     Ybmean = pchip(1:size(rmean,1),bmean(:,2),Xi);
-    plot(Xi,Yrmean,'r','LineWidth',3);
-    plot(Xi,Ybmean,'b','LineWidth',3);
+    plot(Xi,Yrmean,'r','LineWidth',2);
+    plot(Xi,Ybmean,'b--','LineWidth',2);
     %plot(rmean(:,2),'r');
     %plot(bmean(:,2),'b');
-    axis([0 Fs -5 5]);
+    axis([0 Fs -6 6]);
     set(gca,'XTick', [Fs/4 Fs/2 Fs*3/4 Fs]);
     set(gca,'XTickLabel',{'0.25','.5','0.75','1s'});
+    set(gca,'YTick', [-5 0 5]);
+    set(gca,'YTickLabel',{'-5 uV','0','5 uV'});
     set(gcf, 'renderer', 'opengl')
     %hx=xlabel('Repetitions');
     %hy=ylabel('Accuracy');
     set(0, 'DefaultAxesFontSize',18);
+    text(0.5,4.5,sprintf('Subj %d',subject),'FontWeight','bold');
     %set(hx,'fontSize',20);
     %set(hy,'fontSize',20);
-    hold off
 end
+legend('Target','NonTarget');
+hold off
 
-
+%%
 informedinpaper =   [  0.845  
     0.863    
     0.872    
@@ -228,23 +236,28 @@ for subject=1:8
     [C,I] = max(subjectACCij(subjectnumberofsamples,subject,:));
     S = subjectACCijsigma(subjectnumberofsamples,subject,I);
     d = subjectACCij(subjectnumberofsamples,subject,2);
-    totals = [totals ;informedinpaper(subject) [mean(subjectACCij(subjectnumberofsamples,subject,:)) d  I C  S]];
-    fprintf('%f     & %f & %f & %d & %f $\\pm$ %f\n', totals(subject,:));
+    
+    totals = [totals ;subject informedinpaper(subject) [ d mean(subjectACCij(subjectnumberofsamples,subject,:)) I C  S]];
+    fprintf('%d     & %6.2f & %6.2f', [ subject informedinpaper(subject) d]);
+    fprintf('& %s', channels{I});
+    fprintf('& %6.2f $\\pm$ %4.2f \\\\\n', [C S]);
 end
 totals
 
+%%
 if (graphics)
     processedflashes = 12*[10:-1:1]-1;
     fig = figure
     hold on;
-    plot(processedflashes,subjectACCij(processedflashes,1,1),'y','LineWidth',2)
-    plot(processedflashes,subjectACCij(processedflashes,1,2),'m','LineWidth',2)
-    plot(processedflashes,subjectACCij(processedflashes,1,3),'c','LineWidth',2)
-    plot(processedflashes,subjectACCij(processedflashes,1,4),'r','LineWidth',2)
-    plot(processedflashes,subjectACCij(processedflashes,1,5),'g','LineWidth',2)
-    plot(processedflashes,subjectACCij(processedflashes,1,6),'b','LineWidth',2)
-    plot(processedflashes,subjectACCij(processedflashes,1,7),'w','LineWidth',2)
-    plot(processedflashes,subjectACCij(processedflashes,1,8),'k','LineWidth',2)    
+    % samples, subject, channel
+    plot(processedflashes,subjectACCij(processedflashes,2,1),'y','LineWidth',2)
+    plot(processedflashes,subjectACCij(processedflashes,2,2),'m','LineWidth',2)
+    plot(processedflashes,subjectACCij(processedflashes,2,3),'c','LineWidth',2)
+    plot(processedflashes,subjectACCij(processedflashes,2,4),'r','LineWidth',2)
+    plot(processedflashes,subjectACCij(processedflashes,2,5),'g','LineWidth',2)
+    plot(processedflashes,subjectACCij(processedflashes,2,6),'b','LineWidth',2)
+    plot(processedflashes,subjectACCij(processedflashes,2,7),'b','LineWidth',2)
+    plot(processedflashes,subjectACCij(processedflashes,2,8),'k','LineWidth',2) 
     %title(sprintf('10-fold Cross Validation NBNN'));
     hx=xlabel('Repetitions');
     hy=ylabel('Accuracy');
@@ -258,6 +271,18 @@ if (graphics)
     hold off
 end
 
+%%
+performingchannels = [ 2 7 2 8 7 2 7 7 ];
+for subject=1:8
+    selectedflashes = [119 59 11];
+    performancefall = subjectACCij(selectedflashes,2,performingchannels(subject));
+    
+    performancepercentagefall = floor((1-performancefall(3)/performancefall(1))*100);
+    
+    fprintf('%d & %s', [subject channels{performingchannels(subject)}]);
+    fprintf(' & %6.2f & %6.2f & %6.2f & %d%%\\\\\n', [ performancefall' performancepercentagefall ]);
+
+end
 
 
 %% Generate the cross validated accuracy for Cz, Pz and for the best performing channel.
