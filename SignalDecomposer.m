@@ -9,11 +9,15 @@
 % run('C:/vlfeat/toolbox/vl_setup')
 % P300 for ALS patients.
 
-clear all;
+%clear all;
+
+rng(396544);
+
 
 subjectaverages= cell(0);
+
 subjectartifacts = 0;
-subjectnumberofsamples=119;
+subjectnumberofsamples=5;
 %for subjectnumberofsamples=12*[10:-1:1]-1
 for subject = 1:8
 clear mex;clearvars  -except subject*;close all;clc;
@@ -41,8 +45,8 @@ channels={ 'Fz'  ,  'Cz',    'Pz' ,   'Oz'  ,  'P3'  ,  'P4'   , 'PO7'   , 'PO8'
 epochRange = 1:120*7*5;
 channelRange=1:8;
 labelRange = zeros(1,4200);
-imagescale=2;    % Para agarrar dos decimales NN.NNNN
 siftscale=3;  % Determines lamda length [ms] and signal amp [microV]
+imagescale=2;    % Para agarrar dos decimales NN.NNNN
 siftdescriptordensity=1;
 Fs=256;
 windowsize=1;
@@ -58,9 +62,10 @@ data.X = notchsignal(data.X, channelRange);
 %drawfft(data.X(:,2)',true,256);
 %data.X=downsample(data.X,downsize);
 %data.X = decimateaveraging(data.X,channelRange,downsize);
+data.X = bandpasseeg(data.X, channelRange,Fs);
 data.X = decimatesignal(data.X,channelRange,downsize);
 %drawfft(data.X(:,2)',true,Fs);
-data.X = bandpasseeg(data.X, channelRange,Fs);         
+         
 %drawfft(data.X(:,2)',true,Fs);     
 
 epoch=0;
@@ -82,7 +87,18 @@ for trial=1:35
         % Check wether or not are we going to provide that amount of
         % sample points.
         if (processedflashes>subjectnumberofsamples)
-            break;
+            %break;
+            %ProcessFlash
+            
+            routput=[];
+            boutput=[];
+
+            artifact=false;
+            bcounter=0;
+            rcounter=0;
+            
+            
+            processedflashes=0;
         end
         label=labels(flash+1);
         if (mod(flash,12)==0)
@@ -103,78 +119,82 @@ for trial=1:35
         % We are only adding values to the list (zeros are not counted in
         % the averaging)
         
-        %output2 = data.X( (data.trial(trial)+64*flash):(data.trial(trial)+64*flash)+Fs*length-1,:);
-        
+        %output2 = data.X( (data.trial(trial)+64*flash):(data.trial(trial)+64*flash)+Fs*length-1,:);        
         output = baselineremover(data.X,(ceil(data.trial(trial)/downsize)+ceil(64/downsize)*flash),Fs*windowsize,channelRange,downsize);
-        
+ 
         [n,m]=size(output);
-        output=output - ones(n,1)*mean(output,1);
+        output=output - ones(n,1)*mean(output,1);       
         
-        
-        if ((label==2) && (rcounter<2))
+        if ((label==2) && (rcounter<200))
             routput = [routput; output];
             rcounter=rcounter+1;
+            bmean=output;
+            GenerateImage
         end
-        if ((label==1) && (bcounter<2))
+        if ((label==1) && (bcounter<200))
             boutput = [boutput; output];
             bcounter=bcounter+1;
+            bmean=output;
+            GenerateImage
         end
               
 
     end
     
-    assert( bcounter == rcounter, 'Averages are calculated from different sizes');
+    if (false && size(routput,1) >= 2)
+        assert( bcounter == rcounter, 'Averages are calculated from different sizes');
     
-    assert( size(boutput,1) == size(routput,1), 'Averages are calculated from different sizes.')
+        assert( size(boutput,1) == size(routput,1), 'Averages are calculated from different sizes.')
     
-    assert( (size(routput,1) >= 2 ), 'There arent enough epoch windows to average.');
+        assert( (size(routput,1) >= 2 ), 'There arent enough epoch windows to average.');
    
+        routput=reshape(routput,[Fs size(routput,1)/Fs 8]);
+        boutput=reshape(boutput,[Fs size(boutput,1)/Fs 8]);
 
-    routput=reshape(routput,[Fs size(routput,1)/Fs 8]);
-    boutput=reshape(boutput,[Fs size(boutput,1)/Fs 8]);
+        for channel=channelRange
+            rmean(:,channel) = mean(routput(:,:,channel),2);
+            bmean(:,channel) = mean(boutput(:,:,channel),2);
+        end
+    %     figure;
+    %     hold on;
+    %     subplot(3,1,1);
+    %     ho    figure;
+    %     hold on;ld on;
+    %     plot(rmean(:,2),'r');
+    %     axis([0 Fs -5 5]);
+    %     subplot(3,1,2);
+    %     hold on;
+    %     plot(bmean(:,2),'b');
+    %     axis([0 Fs -5 5]);
+    %     subplot(3,1,3);
+    %     hold on;
+    %     plot(rmean(:,2),'r');
+    %     plot(bmean(:,2),'b');
+    %     axis([0 Fs -5 5]);
+    %     hold off
 
-    for channel=channelRange
-        rmean(:,channel) = mean(routput(:,:,channel),2);
-        bmean(:,channel) = mean(boutput(:,:,channel),2);
+        subjectaverages{subject}.rmean = rmean;
+        subjectaverages{subject}.bmean = bmean;  
+
+        epoch=epoch+1;    
+        label = 1;
+        labelRange(epoch) = label;
+        for channel=channelRange
+            image=eegimagescaled(epoch,label,bmean,channel,imagescale,1);
+        end
+
+        epoch=epoch+1;
+        label = 2;
+        labelRange(epoch) = label;
+        for channel=channelRange
+            image=eegimagescaled(epoch,label,rmean,channel,imagescale,1);
+        end  
     end
-%     figure;
-%     hold on;
-%     subplot(3,1,1);
-%     ho    figure;
-%     hold on;ld on;
-%     plot(rmean(:,2),'r');
-%     axis([0 Fs -5 5]);
-%     subplot(3,1,2);
-%     hold on;
-%     plot(bmean(:,2),'b');
-%     axis([0 Fs -5 5]);
-%     subplot(3,1,3);
-%     hold on;
-%     plot(rmean(:,2),'r');
-%     plot(bmean(:,2),'b');
-%     axis([0 Fs -5 5]);
-%     hold off
-    
-    subjectaverages{subject}.rmean = rmean;
-    subjectaverages{subject}.bmean = bmean;  
-    
-    epoch=epoch+1;    
-    label = 1;
-    labelRange(epoch) = label;
-    for channel=channelRange
-        image=eegimagescaled(epoch,label,bmean,channel,imagescale,1);
-    end
-
-    epoch=epoch+1;
-    label = 2;
-    labelRange(epoch) = label;
-    for channel=channelRange
-        image=eegimagescaled(epoch,label,rmean,channel,imagescale,1);
-    end  
     
 end
-trainingRange=1:30;
-testRange=31:70;
+
+trainingRange=1:300;
+testRange=310:epoch;
 SignalDecomposerClassification
 %SignalDecomposerCrossValidated
 subjectACCij(subjectnumberofsamples,subject,:) = ACCij(:);
@@ -232,17 +252,19 @@ informedinpaper =   [  0.845
     0.923 ];
 
 totals = [];
+fid = fopen('output.txt','a');
 for subject=1:8
     [C,I] = max(subjectACCij(subjectnumberofsamples,subject,:));
     S = subjectACCijsigma(subjectnumberofsamples,subject,I);
     d = subjectACCij(subjectnumberofsamples,subject,2);
     
     totals = [totals ;subject informedinpaper(subject) [ d mean(subjectACCij(subjectnumberofsamples,subject,:)) I C  S]];
-    fprintf('%d     & %6.2f & %6.2f', [ subject informedinpaper(subject) d]);
-    fprintf('& %s', channels{I});
-    fprintf('& %6.2f $\\pm$ %4.2f \\\\\n', [C S]);
+    fprintf(fid,'%d     & %6.2f & %6.2f', [ subject informedinpaper(subject) d]);
+    fprintf(fid,'& %s', channels{I});
+    fprintf(fid,'& %6.2f $\\pm$ %4.2f \\\\\n', [C S]);
 end
 totals
+fclose(fid);
 
 %%
 if (graphics)
@@ -272,16 +294,19 @@ if (graphics)
 end
 
 %%
-performingchannels = [ 2 7 2 8 7 2 7 7 ];
-for subject=1:8
-    selectedflashes = [119 59 11];
-    performancefall = subjectACCij(selectedflashes,2,performingchannels(subject));
-    
-    performancepercentagefall = floor((1-performancefall(3)/performancefall(1))*100);
-    
-    fprintf('%d & %s', [subject channels{performingchannels(subject)}]);
-    fprintf(' & %6.2f & %6.2f & %6.2f & %d%%\\\\\n', [ performancefall' performancepercentagefall ]);
+if (0)
+    fprintf('Performance falling...');
+    performingchannels = [ 2 7 2 8 7 2 7 7 ];
+    for subject=1:8
+        selectedflashes = [119 59 11];
+        performancefall = subjectACCij(selectedflashes,2,performingchannels(subject));
 
+        performancepercentagefall = floor((1-performancefall(3)/performancefall(1))*100);
+
+        fprintf('%d & %s', [subject channels{performingchannels(subject)}]);
+        fprintf(' & %6.2f & %6.2f & %6.2f & %d%%\\\\\n', [ performancefall' performancepercentagefall ]);
+
+    end
 end
 
 

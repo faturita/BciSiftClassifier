@@ -8,8 +8,7 @@ labelRange=labelRange(1:epoch);
 % Restrict where to put the descriptors but based on the specified density
 %assert( 64+min(KS)-siftscale*12/2 >= max(KS), sprintf('%d\n',64+min(KS)-siftscale*12/2))
 
-KS=25:39;
-KS=ceil(100*imagescale/downsize):floor(156*imagescale/downsize);
+KS=ceil(0.29*Fs*imagescale):floor(0.29*Fs*imagescale+Fs*imagescale/4-1);
 
 SaveDescriptors(labelRange,epochRange,channelRange,10,siftscale, siftdescriptordensity,1,KS);
 F = LoadDescriptors(labelRange,epochRange,channelRange);
