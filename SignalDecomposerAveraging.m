@@ -88,18 +88,17 @@ for trial=1:35
         % Check wether or not are we going to provide that amount of
         % sample points.
         if (processedflashes>subjectnumberofsamples)
-            %break;
+            break;
             %ProcessFlash
             
-            routput=[];
-            boutput=[];
+            % RESET
+            %routput=[];
+            %boutput=[];
 
-            artifact=false;
-            bcounter=0;
-            rcounter=0;
-            
-            
-            processedflashes=0;
+            %artifact=false;
+            %bcounter=0;
+            %rcounter=0;
+            %processedflashes=0;
         end
         label=labels(flash+1);
         if (mod(flash,12)==0)
@@ -126,23 +125,23 @@ for trial=1:35
         [n,m]=size(output);
         output=output - ones(n,1)*mean(output,1);       
         
-        if ((label==2) && (rcounter<200))
+        if ((label==2) && (rcounter<2))
             routput = [routput; output];
             rcounter=rcounter+1;
-            bmean=output;
-            GenerateImage
+            %bmean=output;
+            %GenerateImage
         end
-        if ((label==1) && (bcounter<200))
+        if ((label==1) && (bcounter<2))
             boutput = [boutput; output];
             bcounter=bcounter+1;
-            bmean=output;
-            GenerateImage
+            %bmean=output;
+            %GenerateImage
         end
               
 
     end
     
-    if (false && size(routput,1) >= 2)
+    if (size(routput,1) >= 2)
         assert( bcounter == rcounter, 'Averages are calculated from different sizes');
     
         assert( size(boutput,1) == size(routput,1), 'Averages are calculated from different sizes.')
@@ -156,23 +155,24 @@ for trial=1:35
             rmean(:,channel) = mean(routput(:,:,channel),2);
             bmean(:,channel) = mean(boutput(:,:,channel),2);
         end
-    %     figure;
-    %     hold on;
-    %     subplot(3,1,1);
-    %     ho    figure;
-    %     hold on;ld on;
-    %     plot(rmean(:,2),'r');
-    %     axis([0 Fs -5 5]);
-    %     subplot(3,1,2);
-    %     hold on;
-    %     plot(bmean(:,2),'b');
-    %     axis([0 Fs -5 5]);
-    %     subplot(3,1,3);
-    %     hold on;
-    %     plot(rmean(:,2),'r');
-    %     plot(bmean(:,2),'b');
-    %     axis([0 Fs -5 5]);
-    %     hold off
+        figure;
+        hold on;
+        subplot(3,1,1);
+        hold on;
+        figure;
+        hold on;
+        plot(rmean(:,2),'r');
+        axis([0 Fs -5 5]);
+        subplot(3,1,2);
+        hold on;
+        plot(bmean(:,2),'b');
+        axis([0 Fs -5 5]);
+        subplot(3,1,3);
+        hold on;
+        plot(rmean(:,2),'r');
+        plot(bmean(:,2),'b');
+        axis([0 Fs -5 5]);
+        hold off
 
         subjectaverages{subject}.rmean = rmean;
         subjectaverages{subject}.bmean = bmean;  

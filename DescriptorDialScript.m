@@ -47,7 +47,8 @@ downsize=8;
 
 data.oX = data.X;
 
-data.W = drugsignal(Fs,data.X,20,10);
+%data.W = drugsignal(Fs,data.X,20,10);
+data.W = data.X + (randi(8,size(data.X,1),8)-8/2);
 data.W = notchsignal(data.W, channelRange);
 data.W = bandpasseeg(data.W, channelRange, Fs);
 data.W = decimatesignal(data.W,channelRange,downsize);
@@ -205,8 +206,75 @@ F = LoadDescriptors(labelRange,epochRange,channelRange);
 
 
 
+%% Data Visualization
+figure;
+subplot(2,2,1);
+epoch=4138;
+
+output = baselineremover(data.X,data.epoch(epoch),Fs*windowsize,channelRange,downsize);
+plot((-1)*output(:,2));
+axis([0 256/downsize -30 30]);
+% Add lines
+h1 = line([ceil(26/4 + siftscale*12/4) ceil(26/4 + siftscale*12/4)],[-30 30]);
+h2 = line([floor(26/4) floor(26/4)],[-30 30]);
+% Add a patch
+gray = [0.4 0.4 0.4];
+patch([ceil(26/4 + siftscale*12/4) floor(26/4) floor(26/4) ceil(26/4 + siftscale*12/4)],[-30 -30 30 30],gray)
+set(gca,'children',flipud(get(gca,'children')))
+% Set properties of lines
+set([h1 h2],'Color','k','LineWidth',2)
+
+subplot(2,2,3);
+DisplayDescriptorImageFull(F,epoch,1,1,1,true);
+
+subplot(2,2,2);
+epoch=4139;
+output = baselineremover(data.X,data.epoch(epoch),Fs*windowsize,channelRange,downsize);
+plot((-1)*output(:,2));axis([0 256/downsize -30 30]);
+h1 = line([ceil(26/4 + siftscale*12/4) ceil(26/4 + siftscale*12/4)],[-30 30]);
+h2 = line([floor(26/4) floor(26/4)],[-30 30]);
+% Add a patch
+gray = [0.4 0.4 0.4];
+patch([ceil(26/4 + siftscale*12/4) floor(26/4) floor(26/4) ceil(26/4 + siftscale*12/4)],[-30 -30 30 30],gray)
+set(gca,'children',flipud(get(gca,'children')))
+subplot(2,2,4);
+DisplayDescriptorImageFull(F,epoch,2,1,1,true);
+%print(fa,'sampledescriptor','-dpng')
+
+%% Descriptor Dial from the images
+epoch=161
+    label=labelRange(epoch);
+    channel=2;
+    [patternframe, pattern] = PlaceDescriptors(channel,label,epoch, siftscale, siftdescriptordensity,30);
+    %figure;
+    %DisplayDescriptorImage(frames,pattern,epoch,label,channel,1);
+
+    pattern = single(pattern);
+
+
+    dSignal=zeros(1,Fs*imagescale);
+
+    qKS=1:Fs*imagescale;
+    [frames, desc] = PlaceDescriptors(channel,label,epoch, siftscale, siftdescriptordensity,qKS);
+
+    for i = 1:size(desc,2)
+        descriptor = single(desc(:,i));
+        dSignal(frames(1,i)) = norm(descriptor-pattern);
+    end
+
+
+    figure1=figure('Position', [100, 100, 1024, 1200]);
+    subplot(4,1,1);
+    plot(dSignal);
+    axis([0 Fs*imagescale 0 1000]);
+    subplot(4,1,[2,3]);
+    DisplayDescriptorImage(patternframe,pattern,epoch,label,channel,1,true);
+    subplot(4,1,4);
+    output = baselineremover(data.X,data.epoch(epoch),Fs*windowsize,channelRange,downsize);
+    plot((1)*output(:,2));axis([0 256/downsize -30 30]);
+
+
 %% Check Descriptor Distorsion tolerance
-for amp=10:2:10
 epoch=500;
 output = baselineremover(data.X,data.epoch(epoch),Fs*windowsize,channelRange,downsize);
 [n,m]=size(output);output=output - ones(n,1)*mean(output,1);    
@@ -225,13 +293,8 @@ L = size(output,1);                     % Length of signal
 t = (0:L-1)*T;                % Time vector
 
 t = repmat(t,8,1)';
+amp=20;
 noisyoutput = output+(amp*sin(2*pi*10*t));;
-
-
-data.W = drugsignal(Fs,data.oX,80,10);
-data.W = notchsignal(data.W, channelRange);
-data.W = bandpasseeg(data.W, channelRange, Fs);
-data.W = decimatesignal(data.W,channelRange,downsize);
 
 
 output2 = baselineremover(data.W,data.epoch(epoch),Fs*windowsize,channelRange,downsize);
@@ -270,6 +333,194 @@ axis([0 Fs -30 30]);
 subplot(4,2,[7,8]);
 plot(output2(:,channel));
 title('Test Signal (noise = 0)');
-title(sprintf('Signal contaminated with %10.2f microVolt Amplitude alpha wave',amp));
+title(sprintf('Signal contaminated with %10.2f microVolt Amplitude alpha (10Hz) wave',amp));
 axis([0 Fs -30 30]);
+
+%%  Chequear tambi?n que pasa con la traslaci?n de la propia curva (no
+% deber?a pasar nada), ni tampoco con trending.
+noisyoutput = output; 
+
+[image, DOTS] = eegimage(channel,noisyoutput,imagescale,false);
+
+for i=1:size(DOTS.YY,1)
+    DOTS.XX(i) = DOTS.XX(i) - 5;
 end
+
+dSignal=zeros(1,256);
+
+KS=1:256;
+[frames, desc] = PlaceDescriptorsByImage(image,DOTS, siftscale, siftdescriptordensity,KS);
+
+for i = 1:size(desc,2)
+    descriptor = single(desc(:,i));
+    dSignal(frames(1,i)) = norm(descriptor-pattern);
+end
+
+
+figure1=figure('Position', [100, 100, 1024, 1200]);
+subplot(4,2,[1,2]);
+plot(dSignal);
+title('Euclidean Distance between pattern descriptor and test descriptors (for each t-position).');
+axis([0 256 0 1000]);
+subplot(4,2,3);
+DisplayDescriptorImageByImage(patternframes,pattern,patternimage,1,true);
+subplot(4,2,4);
+a = find(dSignal~=0);
+DisplayDescriptorImageByImage(frames,desc,image,171-a(1)+1,true);    
+subplot(4,2,[5,6]);
+plot((-1)*output(:,channel));
+title('Original Signal');
+axis([0 256 -30 30]);
+subplot(4,2,[7,8]);
+plot((-1)*noisyoutput(:,channel));
+title('Test Signal (Shifted 5 positions upwards)');
+axis([0 256 -30 30]);
+
+
+noisyoutput = output + (randi(8,256,8)-8/2);
+
+% Savitzky-Golay filtering
+%framelen=25; %debe ser un nro impar!!
+%order2=2;
+%noisyoutput=sgolayfilt(noisyoutput,order2,framelen);
+
+
+[image, DOTS] = eegimage(channel,noisyoutput,imagescale,false);
+
+%image = gaussiansmoothing(image, 3);
+
+
+% Verifying how much of the Descripto handle signal shifting 
+dSignal=zeros(1,256);
+
+KS=1:256;
+[frames, desc] = PlaceDescriptorsByImage(image,DOTS, siftscale, siftdescriptordensity,KS);
+
+for i = 1:size(desc,2)
+    descriptor = single(desc(:,i));
+    dSignal(frames(1,i)) = norm(descriptor-pattern);
+end
+
+
+figure1=figure('Position', [100, 100, 1024, 1200]);
+subplot(4,2,[1,2]);
+plot(dSignal);
+title('Euclidean Distance between pattern descriptor and test descriptors (for each t-position).');
+axis([0 256 0 1000]);
+subplot(4,2,3);
+DisplayDescriptorImageByImage(patternframes,pattern,patternimage,1,true);
+subplot(4,2,4);
+a = find(dSignal~=0);
+DisplayDescriptorImageByImage(frames,desc,image,171-a(1)+1,true);    
+subplot(4,2,[5,6]);
+plot((-1)*output(:,channel));
+title('Original Signal');
+axis([0 256 -30 30]);
+subplot(4,2,[7,8]);
+plot((-1)*noisyoutput(:,channel));
+title('Nosy signal');
+axis([0 256 -30 30]);
+
+
+image = gaussiansmoothing(image, 3);
+
+
+% Verifying how much of the Descripto handle signal shifting 
+dSignal=zeros(1,256);
+
+KS=1:256;
+[frames, desc] = PlaceDescriptorsByImage(image,DOTS, siftscale, siftdescriptordensity,KS);
+
+for i = 1:size(desc,2)
+    descriptor = single(desc(:,i));
+    dSignal(frames(1,i)) = norm(descriptor-pattern);
+end
+
+figure1=figure('Position', [100, 100, 1024, 1200]);
+subplot(4,2,[1,2]);
+plot(dSignal);
+title('Euclidean Distance between pattern descriptor and test descriptors (for each t-position).');
+axis([0 256 0 1000]);
+subplot(4,2,3);
+DisplayDescriptorImageByImage(patternframes,pattern,patternimage,1,true);
+subplot(4,2,4);
+a = find(dSignal~=0);
+DisplayDescriptorImageByImage(frames,desc,image,171-a(1)+1,true);    
+subplot(4,2,[5,6]);
+plot((-1)*output(:,channel));
+title('Original Signal');
+axis([0 256 -30 30]);
+subplot(4,2,[7,8]);
+plot((-1)*noisyoutput(:,channel));
+title('Nosy signal');
+axis([0 256 -30 30]);
+
+figure;snr(noisyoutput(:,2),256,6)
+figure;snr(output(:,2),256,6)
+
+T = 1/256;                     % Sample time
+L = size(output,1);                     % Length of signal
+t = (0:L-1)*T;                % Time vector
+
+t = repmat(t,8,1)';
+
+
+Fr(40) = struct('cdata',[],'colormap',[]);
+axis tight;
+set(gca,'nextplot','replaceChildren','Visible','off');
+axis vis3d;
+
+frameindex=1;
+for amp=20:0.5:20
+noisyoutput = output + (amp*sin(2*pi*10*t));
+[image, DOTS] = eegimage(channel,noisyoutput,imagescale,false);
+
+
+
+
+% Verifying how much of the Descripto handle signal shifting 
+dSignal=zeros(1,256);
+
+KS=1:256;
+[frames, desc] = PlaceDescriptorsByImage(image,DOTS, siftscale, siftdescriptordensity,KS);
+
+for i = 1:size(desc,2)
+    descriptor = single(desc(:,i));
+    dSignal(frames(1,i)) = norm(descriptor-pattern);
+end
+
+
+figure1=figure('Position', [100, 100, 1024, 1200]);
+subplot(4,2,[1,2]);
+plot(dSignal);
+title('Euclidean Distance between pattern descriptor and test descriptors (for each t-position).');
+axis([0 256 0 1000]);
+subplot(4,2,3);
+DisplayDescriptorImageByImage(patternframes,pattern,patternimage,1,true);
+subplot(4,2,4);
+a = find(dSignal~=0);
+DisplayDescriptorImageByImage(frames,desc,image,171-a(1)+1,true);    
+subplot(4,2,[5,6]);
+plot((-1)*output(:,channel));
+title('Original Signal');
+axis([0 256 -30 30]);
+subplot(4,2,[7,8]);
+plot((-1)*noisyoutput(:,channel));
+title(sprintf('Signal contaminated with %10.2f microVolt Amplitude alpha wave',amp));
+axis([0 256 -30 30]);
+drawnow;
+Fr(frameindex) = getframe(gcf);
+frameindex=frameindex + 1;
+end
+
+
+
+v = VideoWriter('descriptorplusalphawave');
+open(v);
+for frameindex=2:39
+    %fprintf('%d %d\n',size(Fr(frameindex).cdata));
+    for delays=1:15
+        writeVideo(v, Fr(frameindex));
+    end
+end
+close(v);

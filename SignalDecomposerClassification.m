@@ -13,7 +13,8 @@ labelRange=labelRange(1:epoch);
 KS=25:39;
 KS=19:33;
 KS=ceil(0.29*Fs*imagescale):floor(0.29*Fs*imagescale+Fs*imagescale/4-1);
-
+%KS=26;
+%KS=32;
 
 SaveDescriptors(labelRange,epochRange,channelRange,10,siftscale, siftdescriptordensity,1,KS);
 F = LoadDescriptors(labelRange,epochRange,channelRange);
